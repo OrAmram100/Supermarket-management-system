@@ -2,46 +2,58 @@ package model;
 
 public class Product {
 	private String productName;
-	private int castToStore;
-	private int costToCostumer;
-	
-	
-	public Product(String productName, int castToStore, int costToCostumer) {
+	private int PriceToStore;
+	private int PriceToCostumer;
+	private Customer customer;
+
+	public Product(String productName, int castToStore, int costToCostumer, Customer customer) {
 		this.productName = productName;
-		this.castToStore = castToStore;
-		this.costToCostumer = costToCostumer;
+		this.PriceToStore = castToStore;
+		this.PriceToCostumer = costToCostumer;
+		this.customer = customer;
 	}
 
-
+	// GETTERS:
 	public String getProductName() {
 		return productName;
 	}
 
+	public int getPriceToStore() {
+		return PriceToStore;
+	}
+
+	public int getPriceToCostumer() {
+		return PriceToCostumer;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	// SETTERS:
+	public void setPriceToCostumer(int costToCostumer) {
+		this.PriceToCostumer = costToCostumer;
+	}
 
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
 
-
-	public int getCastToStore() {
-		return castToStore;
+	public void setPriceToStore(int costToStore) {
+		this.PriceToStore = costToStore;
 	}
 
-
-	public void setCastToStore(int castToStore) {
-		this.castToStore = castToStore;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
-
-	public int getCostToCostumer() {
-		return costToCostumer;
+	@Override
+	public String toString() {
+		return "Product\nproductName:" + productName + ", PriceToStore:" + PriceToStore + ", PriceToCostumer:"
+				+ PriceToCostumer + ", customer:" + customer;
 	}
 
-
-	public void setCostToCostumer(int costToCostumer) {
-		this.costToCostumer = costToCostumer;
-	}
 	
 	
-
+	
 }
