@@ -1,13 +1,22 @@
 package model;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
 import obsrever.Observable;
 import obsrever.Observer;
 
 public class Customer implements Observer {
 	private String customerName;
 	private String id;
-	String phoneNumber;
+	private String phoneNumber;
 	private boolean wantUpdates;
+	private final static int MAX_CUST_NAME = 20;
+	private final static int MAX_ID = 9;
+	private final static int Phone_Num = 10;
+	public static final int CUSTOMER_SIZE = (MAX_CUST_NAME*2) + (MAX_ID*2)+(Phone_Num*2) + 1;
+
 
 	public Customer(String customerName, String id, String phoneNumber, boolean wantUpdates) {
 		this.customerName = customerName;
@@ -16,7 +25,6 @@ public class Customer implements Observer {
 		this.wantUpdates = wantUpdates;
 	}
 
-	//GETTRES:
 	public String getCustomerName() {
 		return customerName;
 	}
@@ -45,8 +53,8 @@ public class Customer implements Observer {
 	public void setWantUpdates(boolean wantUpdates) {
 		this.wantUpdates = wantUpdates;
 	}
-	
-	
+
+
 
 	@Override
 	public String toString() {
@@ -55,15 +63,34 @@ public class Customer implements Observer {
 	}
 
 	@Override
-	public void update(Observable obs, Product product) {
-//		System.out.print("---------------- " + r.getSimNumber() + " ----------------\nNew Message Has Arrived\n");
+	public void update(Observable obs, Product product) 
+	{
+		if(isWantUpdates())
+		{
+			System.out.print( this.getPhoneNumber() + "New Message Has Arrived\n");
+			System.out.printf("%s Hi!\nNew sale to the product: !\n%sfrom:%s\n", this.customerName, product,((Store) obs).getName());	
+			sendMSG(obs);
+		}
 	}
-	
-	
-//	@Override
-//	public void sendMSG(Receiver r, Message msg) {
-//		System.out.print("---------------- " + r.getSimNumber() + " ----------------\nNew Message Has Arrived\n");
-//		System.out.print("-----------------------------------------\n");
-//		receiveMSG(this, msg);
 
+	public void sendMSG(Observable r) {
+		System.out.print(((Store)r).getName() + "customer sent message back\n");
+		System.out.printf("from:%s"+this.phoneNumber);
+
+	}
+
+	public static Customer readCustomerToFile(DataInput dataInput) throws IOException {
+		String name = binFile.readStringFromFile(MAX_CUST_NAME, dataInput);
+		String id = binFile.readStringFromFile(MAX_ID, dataInput);
+		String phone = binFile.readStringFromFile(Phone_Num, dataInput);	
+		Boolean isWantUpdate = dataInput.readBoolean(); 
+		return new Customer(name ,id, phone , isWantUpdate);
+	}
+	public void writeCustomerToFile(DataOutput dOut) throws IOException
+	{
+		binFile.writeStringToFile(this.customerName, MAX_CUST_NAME, dOut);
+		binFile.writeStringToFile(this.phoneNumber, Phone_Num, dOut);
+		dOut.writeBoolean(this.wantUpdates);
+	}
 }
+

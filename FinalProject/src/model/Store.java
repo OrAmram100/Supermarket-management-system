@@ -1,96 +1,192 @@
 package model;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
+
+import java.util.Map.Entry;
+
+import obsrever.Observable;
+import obsrever.Observer;
 
 public class Store implements Observable {
-	private static final long serialVersionUID = 1L; //  or please check
+	private static Store _instance  = null;
+	public static final int PRODUCT_KEY_MAX_SIZE = 9 ; 
+	enum SortType {eByAscending , eByDescending , eByIncome};
 	public static final String FILE_NAME = "products txt";
-	private ArrayList<Product> ProductList;  // or please check if we need it, this is the connection to iterator
-	private Set<Customer> allCustomers; //  or please check
+	private String name;
+	private ArrayList<Observer> CustomersToUpdate;
+	private Set<Customer> allCustomers; 
 	private Map<String, Product> products;
 	private Comparator<String> comparator;
-//	private StoreProductsMomento productsMomento;
+	private Memento productsMomento;
+
 	int numOfProducts;
+	SortType sortType;
 	CompareProductByAscendingIdGenartor compareAscending;
 	CompareProductByDescendingIdGenartor compareDescending;
-	
-	
-	
-	
-	public Store() {
+
+	public static Store getInstance(String name) {
+		if(_instance==null)
+			_instance = new Store(name);
+		return _instance;
+	}
+
+
+
+	public Store(String name) {
 		numOfProducts = 0;
 		products =  new LinkedHashMap<String, Product>();
 		compareAscending = new CompareProductByAscendingIdGenartor();
 		compareDescending = new CompareProductByDescendingIdGenartor();
 		setComperator(compareAscending); //default
+		allCustomers=new TreeSet<Customer>();
+		CustomersToUpdate=new ArrayList<>();
+		this.name=name;
+		sortType = SortType.eByIncome;
+		setComperator(null);
 	}
-	
-	
-	
-	
-	public Iterator<Product> iterator() { // or please check if we need the iterator
-		Iterator<Product> ProductIt = new Iterator<Product>() {
 
-			private int index = -1;
+	public void sortMapAccordingType(SortType type)
+	{
+		this.sortType=type;
+		Map<String, Product> tempMap;
+		switch(type) {
 
-			@Override
-			public boolean hasNext() {
-				return (index + 1) <  ProductList.size();
+		case eByAscending:
+
+			this.setComperator(compareAscending);
+			tempMap = new TreeMap<String, Product>(comparator);
+			tempMap.putAll(products);
+			products= tempMap;
+			break;
+
+		case eByDescending:
+			this.setComperator(compareDescending);
+			tempMap = new TreeMap<String, Product>(comparator);
+			tempMap.putAll(products);
+			products =tempMap;
+			break;
+
+
+		case eByIncome:			
+			this.setComperator(null);
+			break;
+
+		default:
+			break;
+
+		}	
+
+	}
+	private void iterationInFile() throws FileNotFoundException {
+		System.out.println("1) read file contact to the map");
+		System.out.println("2) remove product by ID");
+		Iterator<Entry<String, Product>> iterator = new FileIterator().getIterator(FILE_NAME);
+		int res =1;
+		Entry<String, Product> entry ;
+		switch(res)
+		{
+
+		case 1:
+			entry = iterator.next();
+			products.put(entry.getKey() , entry.getValue());
+			break;
+
+		case 2: // remove product by ID
+			System.out.println("Write product id that you want to delete");
+			String pId = null; //scan from user
+			while(iterator.hasNext())
+			{
+				entry = iterator.next();
+				if (entry.getKey().equalsIgnoreCase(pId)) {
+					iterator.remove();
+					return;
+				}
 			}
 
-			@Override
-			public Product next() {
-				return  ProductList.get(++index);
+
+		case 3: // remove all products
+			while(iterator.hasNext()) {
+				entry = iterator.next();
+				iterator.remove();
+				removeProduct(entry.getKey());
 			}
-		};
-		return ProductIt;
-	}
 
-	
+		}
 
-	public int readProductsFromBinaryFile(String fileName) {
-		return 0;
 
 	}
 
-	public void addProduct(String key, Product p) {
+
+	public void addProduct(String key, Product p)
+	{
+		productsMomento = new Memento(products);
+		products.put(key, p);
+		this.numOfProducts++;
+		if(p.getCustomer().isWantUpdates())
+			addObserver(p.getCustomer());
 
 	}
-	
-	
+	public int removeLastProduct() {
+
+		if(productsMomento== null)
+			System.out.println("there is no product to delete");
+		products = productsMomento.getProductsMap();
+		productsMomento =null;
+		return 1;  
+	}
+
+
 	public int removeProduct(String SerialNum) {
 		products.remove(SerialNum);
 		return 1;
 	}
-	
+
 	public Product findProduct(String SerialNum){
 		if(products.containsKey(SerialNum))
 			return products.get(SerialNum);
 		return null;
 	}
-	
-	
-	
-	
+
+
+
+
 	// GETTERS:
 	public Map<String, Product> getProducts() {
 		return products;
 	}
+	public String getName() {
+		return name;
+	}
+
 
 	public int getNumOfProducts() {
 		return numOfProducts;
 	}
+
+	public ArrayList<Observer> getCustomersToUpdate() {
+		return CustomersToUpdate;
+	}
+
+
+
+
+
+	public Set<Customer> getAllCustomers() {
+		return allCustomers;
+	}
+
+
 
 	public Comparator<String> getComparator() {
 		return comparator;
@@ -101,8 +197,11 @@ public class Store implements Observable {
 		this.comparator = comparator;
 
 	}
-	
-	
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
 	//COMPARATORS:
 	public class CompareProductByAscendingIdGenartor implements Comparator<String> {
 
@@ -111,7 +210,7 @@ public class Store implements Observable {
 			return s1.compareTo(s2);
 		}
 	}
-	
+
 	public class CompareProductByDescendingIdGenartor implements Comparator<String> {
 
 		@Override
@@ -120,23 +219,21 @@ public class Store implements Observable {
 		}
 
 	}
-	
-	// Print methods:
-	
+
+
 	public void printAllCustomersSet() {
 		Iterator<Customer> it = allCustomers.iterator();
 		while (it.hasNext()) {
 			System.out.println(it.next().toString() + "\n");
 		}
 	}
-	
+
 	public void printAllProducts() {
 		setComperator(compareAscending);
-//		sort();
-		Iterator<Product> it = iterator();
+		Iterator<Entry<String, Product>> it = products.entrySet().iterator();
 		while (it.hasNext()) {
-			Product product = it.next();
-			System.out.println(product.toString()+"\n");
+			Entry<String, Product> en = it.next();
+			System.out.println(en.toString()+"\n");
 		}
 	}
 
@@ -144,16 +241,16 @@ public class Store implements Observable {
 	{
 
 		try {
-			ObjectOutputStream Object = new ObjectOutputStream(new FileOutputStream(FILE_NAME));
-			Object.writeObject(products.size());
-			for(java.util.Map.Entry<String, Product> e : products.entrySet())
+			RandomAccessFile rF = new RandomAccessFile(FILE_NAME, "rw");
+
+			for(Map.Entry<String, Product> entry : products.entrySet())
 			{
-				Object.writeObject(e.getKey());
-				Object.writeObject(e.getValue());
+				binFile.writeStringToFile(entry.getKey(), PRODUCT_KEY_MAX_SIZE, rF);
+				entry.getValue().writeProductToFile(rF);
 			}
-			Object.close();
+			rF.close();
 			return 1;
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -161,20 +258,68 @@ public class Store implements Observable {
 		}
 		return 0;
 	}
-	
-	
-	
+	public int readProductsFromBinaryFile(String fileName) 
+	{
+		try {
+			RandomAccessFile rF = new RandomAccessFile(FILE_NAME, "r");
+			int size = (int)(rF.length() / (PRODUCT_KEY_MAX_SIZE + Product.PRODUCT_SIZE));
+			for(int i =0 ; i < size ; i++)
+			{
+				String key = binFile.readStringFromFile(PRODUCT_KEY_MAX_SIZE, rF);
+				Product p = Product.readProductFromFile(rF);
+				products.put(key ,p);
+			}
+
+			rF.close();
+			return 1;
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return 0;   
+	}
+
 
 	@Override
-	public void addListener(InvalidationListener arg0) { // WTF is it?
-		// TODO Auto-generated method stub
+	public void addObserver(Observer o)
+	{
+		CustomersToUpdate.add(o);
 
 	}
 
-	@Override
-	public void removeListener(InvalidationListener arg0) {  // WTF is it?
-		// TODO Auto-generated method stub
 
+
+
+	@Override
+	public void deleteObserver(Observer o) 
+	{
+		CustomersToUpdate.remove(o);
 	}
+
+
+
+
+	@Override
+	public void notifyObservers(Product product)
+	{
+		for(Observer o: CustomersToUpdate)
+			o.update(this, product);		
+	}
+
+
+
+
+	@Override
+	public void notifyObserver(Observer o, Product product) {
+		o.update(this, product);
+	}
+
+
+
+
+
 
 }
