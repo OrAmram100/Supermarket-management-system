@@ -21,7 +21,7 @@ import obsrever.Observer;
 public class Store implements Observable {
 	private static Store _instance  = null;
 	public static final int PRODUCT_KEY_MAX_SIZE = 9 ; 
-	enum SortType {eByAscending , eByDescending , eByIncome};
+	public enum SortType {eByAscending , eByDescending , eByIncome};
 	public static final String FILE_NAME = "products txt";
 	private String name;
 	private ArrayList<Observer> CustomersToUpdate;
@@ -88,7 +88,7 @@ public class Store implements Observable {
 		}	
 
 	}
-	private void iterationInFile() throws FileNotFoundException {
+	public void iterationInFile() throws FileNotFoundException {
 		System.out.println("1) read file contact to the map");
 		System.out.println("2) remove product by ID");
 		Iterator<Entry<String, Product>> iterator = new FileIterator().getIterator(FILE_NAME);
