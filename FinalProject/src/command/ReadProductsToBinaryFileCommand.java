@@ -2,7 +2,7 @@ package command;
 
 import model.Store;
 
-public class ReadProductsToBinaryFileCommand implements Command {
+public class ReadProductsToBinaryFileCommand implements Command<Integer> {
 
 	private Store store;
 	private String fileName;
@@ -17,8 +17,8 @@ public class ReadProductsToBinaryFileCommand implements Command {
 
 
 	@Override
-	public void execute() {
-		store.readProductsFromBinaryFile(fileName);
+	public Integer execute() {
+		return store.readProductsFromBinaryFile(fileName);
 		
 	}
 

@@ -3,7 +3,6 @@ package model;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.RandomAccessFile;
 import java.util.Iterator;
 import java.util.Map;
@@ -70,21 +69,20 @@ public class FileIterator {
 			try {
 				while(hasNext()) {
 					last=current;
-					current+=Store.PRODUCT_KEY_MAX_SIZE+Product.PRODUCT_SIZE;
+					current+=(Store.PRODUCT_KEY_MAX_SIZE*2)+Product.PRODUCT_SIZE;
 					rF.seek(current);
 					String k = binFile.readStringFromFile(Store.PRODUCT_KEY_MAX_SIZE, rF);
 					Product p = Product.readProductFromFile(rF);
 					rF.seek(last);
-					rF.writeUTF(k);
+					binFile.writeStringToFile(k, Store.PRODUCT_KEY_MAX_SIZE, rF);
 					p.writeProductToFile(rF);
 					rF.seek(current);
 
 				}
-				rF.setLength(size - Store.PRODUCT_KEY_MAX_SIZE - Product.PRODUCT_SIZE);
+				rF.setLength(size - (Store.PRODUCT_KEY_MAX_SIZE*2) - Product.PRODUCT_SIZE);
 				last =-1;
 				rF.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

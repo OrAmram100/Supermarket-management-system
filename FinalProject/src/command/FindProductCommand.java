@@ -1,8 +1,9 @@
 package command;
 
+import model.Product;
 import model.Store;
 
-public class FindProductCommand implements Command {
+public class FindProductCommand implements Command<Product> {
 	private Store store;
 	private String SerialNum;
 
@@ -17,8 +18,8 @@ public class FindProductCommand implements Command {
 
 
 	@Override
-	public void execute() {
-		store.findProduct(SerialNum);
+	public Product execute() {
+		return store.findProduct(SerialNum);
 
 	}
 
