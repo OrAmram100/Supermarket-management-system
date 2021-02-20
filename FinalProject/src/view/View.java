@@ -31,7 +31,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -73,11 +72,11 @@ public class View {
 	private Button showDetails;
 	private Button removeProduct;
 	private Button cancelProductAddition;
-	private Button removeAllProduct;
-	private Button okButton;
+	private Button removeAllProduct=new Button();
+	private Button okButton=new Button();
 	private Button makeNewSale;
 	private Button updateObserversAboutSale;
-	private Button startSendMessages;
+	private Button startSendMessages=new Button();
 	private Scene mainScene, showDetailsScene, sortScene, findProductScene, addProductScene , makeSale, printObservers;
 	private String function;
 	private ComboBox<String> sortComboBox;
@@ -106,7 +105,7 @@ public class View {
 		Label title = new Label(" Welcome to Management system");
 		title.setFont(new Font(40));
 
-		VBox layoutInMainWindow = new VBox(180);
+		VBox layoutInMainWindow = new VBox(20);
 		layoutInMainWindow.setAlignment(Pos.CENTER);
 		layoutInMainWindow.getChildren().addAll(title, showDetails, sortButton, buttonSearch, buttonAddProduct,
 				makeNewSale, updateObserversAboutSale);
@@ -136,8 +135,8 @@ public class View {
 		sellingPrice.setVisible(true);
 		sellingPriceTxt = new Text("new price:");
 		VBox addNewSale = new VBox(10);
-		addNewSale.getChildren().addAll(title, productKey, productKeyTxt, sellingPrice, sellingPriceTxt, okButton, previous);
-		makeSale = new Scene(addNewSale, 1000, 800);
+		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
+		addNewSale.getChildren().addAll(title, productKeyTxt, productKey,sellingPriceTxt, sellingPrice,  okButton, previous);		makeSale = new Scene(addNewSale, 1000, 800);
 		getMainWindow().setScene(makeSale);
 
 	}
@@ -148,6 +147,7 @@ public class View {
 		startSendMessages = new Button("send");
 		Button previous = new Button("Previous");
 		VBox print = new VBox(10);
+		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
 
 		print.getChildren().addAll(title,startSendMessages,  previous);
 		printObservers = new Scene(print, 1000, 800);
@@ -161,7 +161,7 @@ public class View {
 		Button previous = new Button("Previous");
 		Button okButton = new Button("confirm");
 		sortComboBox = new ComboBox<String>();
-		sortComboBox.getItems().addAll(Store.SortType.values().toString());
+		sortComboBox.getItems().addAll(Store.SortType.values().toString());//roni change this
 		VBox sortVbox = new VBox(10);
 		Label title = new Label("Sorting details");
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
@@ -220,9 +220,9 @@ public class View {
 		Text wantsUpdates = new Text("the customer wants updates?");
 		r1 = new RadioButton();
 		VBox addProductBox = new VBox(10);
-		addProductBox.getChildren().addAll(title, product, serial2, serialTxt2, productName, productNameTxt, storeCost,
-				storeCostTxt, sellingPrice, sellingPriceTxt, customer, customerName, customerNameTxt, CustomerPhone,
-				CustomerPhoneTxt, CustomerId, CustomerIdTxt, wantsUpdates, r1, okButton, previous);
+		addProductBox.getChildren().addAll(title, product, serialTxt2, serial2, productNameTxt, productName,storeCostTxt, storeCost, sellingPriceTxt,
+				sellingPrice, customer,customerNameTxt, customerName,CustomerPhoneTxt, CustomerPhone,
+				CustomerIdTxt, CustomerId, wantsUpdates, r1, okButton, previous);
 		addProductScene = new Scene(addProductBox, 1000, 800);
 		getMainWindow().setScene(addProductScene);
 
@@ -536,13 +536,13 @@ public class View {
 
 		}
 	}
-	public Stage alertStage(Label l) {
-		Stage errorStage= new Stage();
-		StackPane pane= new StackPane();
-		pane.getChildren().addAll(l);
-		errorStage.setScene(new Scene(pane, 400,200));		
-		errorStage.show();
-		return errorStage;
+	public void alertStage(Label l) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Information Dialog");
+		alert.setHeaderText("note");
+		alert.setContentText("There are no products in the file!!!please add!");
+
+		alert.showAndWait();
 	}
 
 
