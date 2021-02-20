@@ -290,9 +290,8 @@ public class Store implements Observable {
 		}
 		return 0;
 	}
-	public int readProductsFromBinaryFile(String fileName) 
+	public int readProductsFromBinaryFile(String fileName) throws IOException 
 	{
-		try {			
 			RandomAccessFile rF = new RandomAccessFile(FILE_NAME, "r");
 			int size = (int)(rF.length() / (PRODUCT_KEY_MAX_SIZE + Product.PRODUCT_SIZE));
 				for(int i =0 ; i < size ; i++)
@@ -305,11 +304,7 @@ public class Store implements Observable {
 				rF.close();
 				
 			
-		} catch (FileNotFoundException e) {
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 
 		return 1;   
 	}

@@ -3,6 +3,8 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import model.Store;
 import view.View;
 
@@ -13,6 +15,15 @@ public class Controller {
 	public Controller(Store model, View view) {
 		theModel = model;
 		theView = view;
+
+
+		try {
+			theModel.readProductsFromBinaryFile("products txt");
+		} catch ( Exception c) {
+			Label l = new Label("There are no products inside the file! ");
+			l.setTextFill(Color.RED);
+			theView.alertStage(l);		}
+
 		EventHandler<ActionEvent> confirm = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
