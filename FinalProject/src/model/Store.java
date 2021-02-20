@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javafx.scene.control.Alert;
 
 import java.util.Map.Entry;
 
@@ -22,18 +23,17 @@ public class Store implements Observable {
 	private static Store _instance  = null;
 	public static final int PRODUCT_KEY_MAX_SIZE = 9 ; 
 	public enum SortType {eByAscending , eByDescending , eByIncome};
-	public static final String FILE_NAME = "products txt";
+	public static final String FILE_NAME = "products.txt";
 	private String name;
 	private ArrayList<Observer> CustomersToUpdate;
 	private Set<Customer> allCustomers; 
 	private Map<String, Product> products;
 	private Comparator<String> comparator;
 	private Memento productsMomento;
-
-	int numOfProducts;
+	private int numOfProducts;
 	SortType sortType;
-	CompareProductByAscendingIdGenartor compareAscending;
-	CompareProductByDescendingIdGenartor compareDescending;
+	private CompareProductByAscendingIdGenartor compareAscending;
+	private CompareProductByDescendingIdGenartor compareDescending;
 
 	public static Store getInstance(String name) {
 		if(_instance==null)
@@ -78,7 +78,8 @@ public class Store implements Observable {
 			break;
 
 
-		case eByIncome:			
+		case eByIncome:	
+			products = new LinkedHashMap<>();
 			this.setComperator(null);
 			break;
 
@@ -88,11 +89,8 @@ public class Store implements Observable {
 		}	
 
 	}
-	public void iterationInFile() throws FileNotFoundException {
-		System.out.println("1) read file contact to the map");
-		System.out.println("2) remove product by ID");
+	public void iterationInFile(String SerialNum,int res) throws FileNotFoundException {
 		Iterator<Entry<String, Product>> iterator = new FileIterator().getIterator(FILE_NAME);
-		int res =1;
 		Entry<String, Product> entry ;
 		switch(res)
 		{
@@ -102,13 +100,11 @@ public class Store implements Observable {
 			products.put(entry.getKey() , entry.getValue());
 			break;
 
-		case 2: // remove product by ID
-			System.out.println("Write product id that you want to delete");
-			String pId = null; //scan from user
+		case 2: 
 			while(iterator.hasNext())
 			{
 				entry = iterator.next();
-				if (entry.getKey().equalsIgnoreCase(pId)) {
+				if (entry.getKey().equalsIgnoreCase(SerialNum)) {
 					iterator.remove();
 					return;
 				}
@@ -119,7 +115,7 @@ public class Store implements Observable {
 			while(iterator.hasNext()) {
 				entry = iterator.next();
 				iterator.remove();
-				removeProduct(entry.getKey());
+				removeProduct(entry.getKey(),2);
 			}
 
 		}
@@ -135,30 +131,66 @@ public class Store implements Observable {
 		this.numOfProducts++;
 		if(p.getCustomer().isWantUpdates())
 			addObserver(p.getCustomer());
+		saveProductsToBinaryFile(FILE_NAME);
 
 	}
-	public int removeLastProduct() {
+	public int removeLastProduct()  {
 
 		if(productsMomento== null)
-			System.out.println("there is no product to delete");
+			return 0;
 		products = productsMomento.getProductsMap();
 		productsMomento =null;
-		return 1;  
+
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setContentText("There is no product to delete");            
+
+		return 1;
+
 	}
 
 
-	public int removeProduct(String SerialNum) {
+	public int removeProduct(String SerialNum,int menu) {
+		Product p = findProduct(SerialNum);
+		if(p==null)
+			return 0;
 		products.remove(SerialNum);
+		try {
+			iterationInFile(SerialNum,menu);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return 1;
 	}
 
 	public Product findProduct(String SerialNum){
+
 		if(products.containsKey(SerialNum))
 			return products.get(SerialNum);
 		return null;
 	}
 
+	public Product findProductInFile(String serialNum) throws FileNotFoundException {
+		Iterator<Entry<String, Product>> iterator = new FileIterator().getIterator(FILE_NAME);
+		while (iterator.hasNext()) {
+			Map.Entry<String, Product> entry = iterator.next();
+			if (entry.getKey().equalsIgnoreCase(serialNum))
+				return entry.getValue();
 
+		}
+
+		return null;
+
+	}
+	public void removeAllProducts(int menu) {
+		try {
+			iterationInFile(null, menu);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 
 	// GETTERS:
@@ -272,7 +304,7 @@ public class Store implements Observable {
 
 			rF.close();
 			return 1;
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -282,7 +314,30 @@ public class Store implements Observable {
 		return 0;   
 	}
 
+	public int calculateProfit()
+	{
+		int sum=0;
+		Iterator<Entry<String, Product>> it = products.entrySet().iterator();
+		while (it.hasNext()) 
+		{
+			Entry<String, Product> en = it.next();
+			sum+=en.getValue().getPriceToCostumer()-en.getValue().getPriceToStore();
+		}
+		return sum;
+	}
 
+	public void updateSale(String key,int newPrice)
+	{
+		Iterator<Entry<String, Product>> it = products.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, Product> en = it.next();
+			if(en.getKey().equalsIgnoreCase(key))
+			{
+				en.getValue().setPriceToCostumer(newPrice);
+				notifyObserver(en.getValue().getCustomer(),en.getValue());
+			}
+		}
+	}
 	@Override
 	public void addObserver(Observer o)
 	{
@@ -303,10 +358,19 @@ public class Store implements Observable {
 
 
 	@Override
-	public void notifyObservers(Product product)
+	public void notifyObservers()    //print
 	{
 		for(Observer o: CustomersToUpdate)
-			o.update(this, product);		
+		{
+			Iterator<Entry<String, Product>> it = products.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<String, Product> en = it.next();
+				if(((Customer)o).getId().equalsIgnoreCase(en.getValue().getCustomer().getId()))
+				{
+					o.update(this, en.getValue());		
+				}
+			}
+		}
 	}
 
 

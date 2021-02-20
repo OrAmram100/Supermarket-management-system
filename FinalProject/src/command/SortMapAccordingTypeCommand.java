@@ -3,7 +3,7 @@ package command;
 import model.Store;
 import model.Store.SortType;
 
-public class SortMapAccordingTypeCommand implements Command {
+public class SortMapAccordingTypeCommand implements Command<Object> {
 	private Store store;
 	private SortType type;
 
@@ -13,8 +13,9 @@ public class SortMapAccordingTypeCommand implements Command {
 	}
 	
 	@Override
-	public void execute() {
+	public Object execute() {
 	store.sortMapAccordingType(type);
+	return null;
 	}
 	
 	

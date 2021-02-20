@@ -63,19 +63,23 @@ public class Customer implements Observer {
 	}
 
 	@Override
-	public void update(Observable obs, Product product) 
+	public String update(Observable obs, Product product) 
 	{
+		StringBuffer sf = new StringBuffer();
 		if(isWantUpdates())
 		{
-			System.out.print( this.getPhoneNumber() + "New Message Has Arrived\n");
-			System.out.printf("%s Hi!\nNew sale to the product: !\n%sfrom:%s\n", this.customerName, product,((Store) obs).getName());	
-			sendMSG(obs);
+			sf.append( this.getPhoneNumber() + "New Message Has Arrived\n");
+			sf.append(this.customerName + "Hi!\nNew sale to the product: !\n" +product + " from:" +((Store) obs).getName()+"\n");	
+			sf.append(sendMSG(obs));
 		}
+		return sf.toString();
 	}
 
-	public void sendMSG(Observable r) {
-		System.out.print(((Store)r).getName() + "customer sent message back\n");
-		System.out.printf("from:%s"+this.phoneNumber);
+	public String sendMSG(Observable r) {
+		StringBuffer sf = new StringBuffer();
+		sf.append(((Store)r).getName() + "customer sent message back\n");
+		sf.append("from: " +this.phoneNumber+ "\n");
+		return sf.toString();
 
 	}
 

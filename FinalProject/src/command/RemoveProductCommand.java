@@ -2,7 +2,7 @@ package command;
 
 import model.Store;
 
-public class RemoveProductCommand implements Command {
+public class RemoveProductCommand implements Command<Integer> {
 	private Store store;
 	private String SerialNum;
 
@@ -14,8 +14,8 @@ public class RemoveProductCommand implements Command {
 
 
 	@Override
-	public void execute() {
-		store.removeProduct(SerialNum);		
+	public Integer execute() {
+		return store.removeProduct(SerialNum,2);		
 	}
 
 

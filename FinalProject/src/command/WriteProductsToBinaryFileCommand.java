@@ -2,7 +2,7 @@ package command;
 
 import model.Store;
 
-public class WriteProductsToBinaryFileCommand implements Command{
+public class WriteProductsToBinaryFileCommand implements Command<Integer>{
 	private Store store;
 	private String fileName;
 
@@ -16,8 +16,8 @@ public class WriteProductsToBinaryFileCommand implements Command{
 
 
 	@Override
-	public void execute() {
-		store.saveProductsToBinaryFile(fileName);
+	public Integer execute() {
+		return store.saveProductsToBinaryFile(fileName);
 
 	}
 

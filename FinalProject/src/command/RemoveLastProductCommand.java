@@ -2,7 +2,7 @@ package command;
 
 import model.Store;
 
-public class RemoveLastProductCommand implements Command {
+public class RemoveLastProductCommand implements Command<Integer> {
 
 	private Store store;
 
@@ -11,9 +11,12 @@ public class RemoveLastProductCommand implements Command {
 		this.store = store;
 	}
 
+
 	@Override
-	public void execute() {
-		store.removeLastProduct();		
+	public Integer execute() {
+		return store.removeLastProduct();
+		
 	}
 
+	
 }

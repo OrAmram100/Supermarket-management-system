@@ -12,7 +12,6 @@ public class binFile {
 			dO.writeChar(bit);
 		}
 		for (int j = 0; j < str.length(); j++) 
-
 		{
 			bit = str.charAt(j);				
 			dO.writeChar(bit);
@@ -30,20 +29,6 @@ public class binFile {
 		dIn.skipBytes(2 *size);
 		return b.toString();
 	}
-
-//	public static Object getObject(byte[] byteArr) throws IOException, ClassNotFoundException {
-//		ByteArrayInputStream bis = new ByteArrayInputStream(byteArr);
-//		ObjectInput in = new ObjectInputStream(bis);
-//		return in.readObject();
-//	}
-//
-//	public static byte[] getByteArray(Object obj) throws IOException {
-//		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//		try (ObjectOutputStream os = new ObjectOutputStream(bos)) {
-//			os.writeObject(obj);
-//		}
-//		return bos.toByteArray();
-//	}
 
 
 }
