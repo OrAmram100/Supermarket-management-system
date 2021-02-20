@@ -79,7 +79,7 @@ public class View {
 	private Button startSendMessages=new Button();
 	private Scene mainScene, showDetailsScene, sortScene, findProductScene, addProductScene , makeSale, printObservers;
 	private String function;
-	private ComboBox<String> sortComboBox;
+	private ComboBox<SortType> sortComboBox;
 
 
 	public View(Stage primaryStage, Store store) throws Exception {
@@ -160,8 +160,8 @@ public class View {
 		function = "Sorting";
 		Button previous = new Button("Previous");
 		Button okButton = new Button("confirm");
-		sortComboBox = new ComboBox<String>();
-		sortComboBox.getItems().addAll(Store.SortType.values().toString());//roni change this
+		sortComboBox = new ComboBox<SortType>();
+		sortComboBox.getItems().addAll(Store.SortType.values());//roni change this please
 		VBox sortVbox = new VBox(10);
 		Label title = new Label("Sorting details");
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));

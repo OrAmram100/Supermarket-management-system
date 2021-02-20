@@ -2,9 +2,6 @@ package application;
 
 import controller.Controller;
 import javafx.application.Application;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Store;
 import view.View;
