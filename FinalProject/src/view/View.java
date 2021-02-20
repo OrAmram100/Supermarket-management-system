@@ -161,7 +161,7 @@ public class View {
 		Button previous = new Button("Previous");
 		Button okButton = new Button("confirm");
 		sortComboBox = new ComboBox<SortType>();
-		sortComboBox.getItems().addAll(Store.SortType.values());//roni change this
+		sortComboBox.getItems().addAll(Store.SortType.values());//roni change this please
 		VBox sortVbox = new VBox(10);
 		Label title = new Label("Sorting details");
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
