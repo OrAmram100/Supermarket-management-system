@@ -292,26 +292,26 @@ public class Store implements Observable {
 	}
 	public int readProductsFromBinaryFile(String fileName) 
 	{
-		try {
+		try {			
 			RandomAccessFile rF = new RandomAccessFile(FILE_NAME, "r");
 			int size = (int)(rF.length() / (PRODUCT_KEY_MAX_SIZE + Product.PRODUCT_SIZE));
-			for(int i =0 ; i < size ; i++)
-			{
-				String key = binFile.readStringFromFile(PRODUCT_KEY_MAX_SIZE, rF);
-				Product p = Product.readProductFromFile(rF);
-				products.put(key ,p);
-			}
+				for(int i =0 ; i < size ; i++)
+				{
+					String key = binFile.readStringFromFile(PRODUCT_KEY_MAX_SIZE, rF);
+					Product p = Product.readProductFromFile(rF);
+					products.put(key ,p);
+				}
 
-			rF.close();
-			return 1;
-
+				rF.close();
+				
+			
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return 0;   
+		return 1;   
 	}
 
 	public int calculateProfit()

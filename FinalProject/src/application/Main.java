@@ -1,16 +1,19 @@
 package application;
-	
+
 import controller.Controller;
 import javafx.application.Application;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Store;
 import view.View;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 
 
 public class Main extends Application{
-
+	Store store;
+	View view;
+	Controller controller;
 	public static void main(String[] args) {
 		launch(args);
 		//Store store = new Store("Shefa isashar");
@@ -19,15 +22,19 @@ public class Main extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
-	    Store store= new Store("Shefa isashar");
-	    View view = new View(primaryStage,store);
-	    store.readProductsFromBinaryFile(Store.FILE_NAME);
-	    
-	    
-	    
-	    Controller controller= new Controller(store,view);
-		
-	}
 
+		try
+		{
+				Store store= new Store("Shefa isashar");
+				View view = new View(primaryStage,store);
+				Controller controller= new Controller(store,view);
+				store.readProductsFromBinaryFile("products txt");
+		}catch(Exception c) {
+			Label alert = new Label("There are no products in the file");
+			view.alertStage(alert);
+		}
+			
+
+
+	}
 }

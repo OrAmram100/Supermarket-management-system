@@ -1,11 +1,8 @@
 package controller;
 
-import command.FindProductCommand;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
 import model.Store;
 import view.View;
 
@@ -16,18 +13,6 @@ public class Controller {
 	public Controller(Store model, View view) {
 		theModel = model;
 		theView = view;
-
-		int result = 0;
-		result = theModel.readProductsFromBinaryFile("products.txt");
-		if (result == 0) {
-			Label l = new Label("There are no products inside the file! ");
-			l.setTextFill(Color.RED);
-			//theView.OpenErrorStage(l);
-		} else {
-			Label l = new Label("Products loaded from file.");
-			l.setTextFill(Color.GREEN);
-			//	theView.OpenErrorStage(l);
-		}
 		EventHandler<ActionEvent> confirm = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -138,66 +123,54 @@ public class Controller {
 		};
 		theView.addEventToCancelProductAddition(undoLastProduct);
 
-	
-	
-	EventHandler<ActionEvent> sell= new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			try {
-				theView.makeASale(model);
-			} catch (Exception c) {
-				Alert alert = new Alert(Alert.AlertType.ERROR);
-				alert.setContentText(c.getMessage());
+
+
+		EventHandler<ActionEvent> sell= new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					theView.makeASale(model);
+				} catch (Exception c) {
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.setContentText(c.getMessage());
+				}
 			}
-		}
-	};
-	theView.addEventToSell(sell);
+		};
+		theView.addEventToSell(sell);
 
-	
-	
-	EventHandler<ActionEvent> update= new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			try {
-				theView.printObservers(model);;
-			} catch (Exception c) {
-				Alert alert = new Alert(Alert.AlertType.ERROR);
-				alert.setContentText(c.getMessage());
+
+
+		EventHandler<ActionEvent> update= new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					theView.printObservers(model);;
+				} catch (Exception c) {
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.setContentText(c.getMessage());
+				}
 			}
-		}
-	};
-	theView.addEventToUpdateObservers(update);
+		};
+		theView.addEventToUpdateObservers(update);
 
-	
-	
-	EventHandler<ActionEvent> sendMessages= new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			try {
-				theView.updateModel(model);
-			} catch (Exception c) {
-				Alert alert = new Alert(Alert.AlertType.ERROR);
-				alert.setContentText(c.getMessage());
+
+
+		EventHandler<ActionEvent> sendMessages= new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					theView.updateModel(model);
+				} catch (Exception c) {
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.setContentText(c.getMessage());
+				}
 			}
-		}
-	};
-	theView.addEventToSendUpdate(sendMessages);
-
-}
-
-	
-
-
-	public void searchByKey(String key) 
-	{
-		theView.findProduct(new FindProductCommand(theModel, key).execute());
+		};
+		theView.addEventToSendUpdate(sendMessages);
 
 	}
 
-	public void removeByKey(String key) {
-		// TODO Auto-generated method stub
 
-	}
 
-	
+
 }

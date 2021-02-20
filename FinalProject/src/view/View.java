@@ -31,6 +31,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -93,6 +94,7 @@ public class View {
 		removeProduct = new Button("remove a product");
 		makeNewSale = new Button("make new sale"); 
 		updateObserversAboutSale = new Button("update observers");
+		cancelProductAddition = new Button("Cancel last product");
 		sortButton.setFont(new Font("David", 20));
 		buttonSearch.setFont(new Font("David", 20));
 		buttonAddProduct.setFont(new Font("David", 20));
@@ -111,6 +113,7 @@ public class View {
 		layoutInMainWindow.setAlignment(Pos.CENTER);
 		mainScene = new Scene(layoutInMainWindow, 950, 760);
 		primaryStage.setScene(mainScene);
+		primaryStage.show();
 		primaryStage.setOnCloseRequest(e -> {
 			e.consume();
 			try {
@@ -533,6 +536,15 @@ public class View {
 
 		}
 	}
+	public Stage alertStage(Label l) {
+		Stage errorStage= new Stage();
+		StackPane pane= new StackPane();
+		pane.getChildren().addAll(l);
+		errorStage.setScene(new Scene(pane, 400,200));		
+		errorStage.show();
+		return errorStage;
+	}
+
 
 	public void findProduct(Product product) {
 		if (product == null) {
