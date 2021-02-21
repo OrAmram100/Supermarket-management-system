@@ -68,8 +68,8 @@ public class Customer implements Observer {
 		StringBuffer sf = new StringBuffer();
 		if(getWantUpdates())
 		{
-			sf.append( this.getPhoneNumber() + "New Message Has Arrived\n");
-			sf.append(this.customerName + "Hi!\nNew sale to the product: !\n" +product + " from:" +((Store) obs).getName()+"\n");	
+			sf.append( this.getPhoneNumber() + " New Message Has Arrived!\n");
+			sf.append(this.customerName + " Hi!\nNew sale to the product: \n" +product + " from:" +((Store) obs).getName()+"\n");	
 			sf.append(sendMSG(obs));
 		}
 		return sf.toString();
@@ -77,8 +77,8 @@ public class Customer implements Observer {
 
 	public String sendMSG(Observable r) {
 		StringBuffer sf = new StringBuffer();
-		sf.append(((Store)r).getName() + "customer sent message back\n");
-		sf.append("from: " +this.phoneNumber+ "\n");
+		sf.append( "customer sent message back\n");
+		sf.append("from: " +this.getCustomerName()+ "\n");
 		return sf.toString();
 
 	}
