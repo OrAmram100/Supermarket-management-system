@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import javafx.scene.control.Alert;
 
 import java.util.Map.Entry;
 
@@ -36,6 +34,7 @@ public class Store implements Observable {
 	SortType sortType;
 	private CompareProductByAscendingIdGenartor compareAscending;
 	private CompareProductByDescendingIdGenartor compareDescending;
+	private ComperatorProductByInsert compareByIncome;
 
 	public static Store getInstance(String name) {
 		if(_instance==null)
@@ -69,6 +68,11 @@ public class Store implements Observable {
 			this.setComperator(compareAscending);
 			tempMap = new TreeMap<String, Product>(comparator);
 			tempMap.putAll(products);
+			removeAllProducts(3);
+			for(Iterator<Entry<String, Product>> iterator = tempMap.entrySet().iterator(); iterator.hasNext(); ) {
+			    Entry<String, Product> entry = iterator.next();
+			    addProduct(entry.getKey(),entry.getValue());
+			}
 			products= tempMap;
 			break;
 
@@ -76,13 +80,25 @@ public class Store implements Observable {
 			this.setComperator(compareDescending);
 			tempMap = new TreeMap<String, Product>(comparator);
 			tempMap.putAll(products);
+			removeAllProducts(3);
+			for(Iterator<Entry<String, Product>> iterator = tempMap.entrySet().iterator(); iterator.hasNext(); ) {
+			    Entry<String, Product> entry = iterator.next();
+			    addProduct(entry.getKey(),entry.getValue());
+			}
 			products =tempMap;
 			break;
 
 
 		case eByIncome:	
-			products = new LinkedHashMap<>();
-			this.setComperator(null);
+			this.setComperator(compareByIncome);
+			tempMap = new TreeMap<String,Product>(comparator);
+			tempMap.putAll(products);
+			removeAllProducts(3);
+			for(Iterator<Entry<String, Product>> iterator = tempMap.entrySet().iterator(); iterator.hasNext(); ) {
+			    Entry<String, Product> entry = iterator.next();
+			    addProduct(entry.getKey(),entry.getValue());
+			}
+			products = new LinkedHashMap<String, Product>(tempMap);
 			break;
 
 		default:
@@ -259,11 +275,19 @@ public class Store implements Observable {
 
 		@Override
 		public int compare(String s1, String s2) {
-			return (s1.compareTo(s2) * -1);
+			return (s2.compareTo(s1));
 		}
 
 	}
+	public class ComperatorProductByInsert implements Comparator<String>
+	{
 
+		@Override
+		public int compare(String arg0, String arg1) {
+			return 1;
+		}
+		
+	}
 
 	public void printAllCustomersSet() {
 		Iterator<Customer> it = allCustomers.iterator();
@@ -376,7 +400,7 @@ public class Store implements Observable {
 		{
 			for(Observer o: CustomersToUpdate)
 			{
-				if(((products.get(i).getCustomer().getId().equalsIgnoreCase(((Customer)o).getId()))))
+			//	if(((products.get(i).getCustomer().getId().equalsIgnoreCase(((Customer)o).getId()))))
 					sb.append(o.update(this,products.get(i))+"\n");		
 				}		
 		}

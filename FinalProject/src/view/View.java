@@ -170,7 +170,9 @@ public class View {
 		sp.setVisible(true);
 		sp.setContent(label);
 		print.getChildren().addAll(sp,label,  previous);
+		products.clear();
 		printObservers = new Scene(print, 1000, 800);
+		numOfPrdoucts=0;
 		getMainWindow().setScene(printObservers);
 
 
@@ -492,6 +494,7 @@ public class View {
 						{
 							Alert art = new Alert(Alert.AlertType.ERROR);
 							art.setContentText("there is no product like this");
+							numOfPrdoucts=0;
 							art.show();
 							check=false;
 							break;

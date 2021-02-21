@@ -21,7 +21,7 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 
 
-				Store store= new Store("Shefa isashar");
+				Store store =Store.getInstance("Shefa isashar");
 				View view = new View(primaryStage,store);
 				Controller controller= new Controller(store,view);
 				

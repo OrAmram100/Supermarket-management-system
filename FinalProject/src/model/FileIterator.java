@@ -21,7 +21,6 @@ public class FileIterator {
 
 		private int size;
 		private RandomAccessFile rF;
-		private int pos;
 		private int current =0;
 		private int last =-1;
 
@@ -67,8 +66,14 @@ public class FileIterator {
 			if (last == -1)
 				throw new IllegalStateException();
 			try {
+				if(size<=((Store.PRODUCT_KEY_MAX_SIZE*2)+Product.PRODUCT_SIZE)) {
+					rF.setLength(0);
+					last =-1;
+					rF.close();
+					return;
+				}
 				while(hasNext()) {
-					pos=last+=(Store.PRODUCT_KEY_MAX_SIZE*2)+Product.PRODUCT_SIZE;
+					int pos=last+=((Store.PRODUCT_KEY_MAX_SIZE*2)+Product.PRODUCT_SIZE);
 					rF.seek(current);
 					String k = binFile.readStringFromFile(Store.PRODUCT_KEY_MAX_SIZE, rF);
 					Product p = Product.readProductFromFile(rF);
@@ -78,7 +83,7 @@ public class FileIterator {
 					current=(int) rF.getFilePointer();
 
 				}
-				rF.setLength(size - (Store.PRODUCT_KEY_MAX_SIZE*2) - Product.PRODUCT_SIZE);
+				rF.setLength(size - ((Store.PRODUCT_KEY_MAX_SIZE*2) + Product.PRODUCT_SIZE));
 				last =-1;
 				rF.close();
 			} catch (IOException e) {
