@@ -7,28 +7,32 @@ import java.io.IOException;
 public class binFile {
 	public static void writeStringToFile(String str, int size, DataOutput dO) throws IOException
 	{
-		char bit = 0;
-		for (int i = size; i>=str.length(); i--) {
-			dO.writeChar(bit);
-		}
-		for (int j = 0; j < str.length(); j++) 
+	int i=0;
+		while(i<size)
 		{
-			bit = str.charAt(j);				
+			char bit = 0;
+			if (i < str.length())
+				bit = str.charAt(i);
 			dO.writeChar(bit);
-
-		}			
+			i++;
+		}
 	}
+		
 
 	public static String readStringFromFile(int size, DataInput dIn) throws IOException {
-		StringBuffer b = new StringBuffer(size);
-		for(int i=0; i < size;i++)
+		StringBuilder b = new StringBuilder(size);
+		int i;
+		for(i=0;i<size;++i)
 		{
 			char ch = dIn.readChar();
-			b.append(ch);
+			if (ch == 0)
+				break;
+			else
+				b.append(ch);
 		}
-		dIn.skipBytes(2 *size);
+		dIn.skipBytes(2 * (size - i-1));
 		return b.toString();
-	}
 
+	}
 
 }

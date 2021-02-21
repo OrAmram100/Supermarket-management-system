@@ -1,5 +1,7 @@
 package command;
 
+import java.io.FileNotFoundException;
+
 import model.Store;
 
 public class RemoveLastProductCommand implements Command<Integer> {
@@ -14,7 +16,13 @@ public class RemoveLastProductCommand implements Command<Integer> {
 
 	@Override
 	public Integer execute() {
-		return store.removeLastProduct();
+		try {
+			return store.removeLastProduct();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 		
 	}
 

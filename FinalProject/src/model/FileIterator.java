@@ -21,7 +21,7 @@ public class FileIterator {
 
 		private int size;
 		private RandomAccessFile rF;
-
+		private int pos;
 		private int current =0;
 		private int last =-1;
 
@@ -52,7 +52,7 @@ public class FileIterator {
 				MyMap entryMap = new MyMap(idProduct, p);
 
 				last = current;
-				current+=(Store.PRODUCT_KEY_MAX_SIZE+Product.PRODUCT_SIZE);	
+				current+=((Store.PRODUCT_KEY_MAX_SIZE*2)+Product.PRODUCT_SIZE);	
 				return entryMap;
 
 			}
@@ -68,15 +68,14 @@ public class FileIterator {
 				throw new IllegalStateException();
 			try {
 				while(hasNext()) {
-					last=current;
-					current+=(Store.PRODUCT_KEY_MAX_SIZE*2)+Product.PRODUCT_SIZE;
+					pos=last+=(Store.PRODUCT_KEY_MAX_SIZE*2)+Product.PRODUCT_SIZE;
 					rF.seek(current);
 					String k = binFile.readStringFromFile(Store.PRODUCT_KEY_MAX_SIZE, rF);
 					Product p = Product.readProductFromFile(rF);
-					rF.seek(last);
+					rF.seek(pos);
 					binFile.writeStringToFile(k, Store.PRODUCT_KEY_MAX_SIZE, rF);
 					p.writeProductToFile(rF);
-					rF.seek(current);
+					current=(int) rF.getFilePointer();
 
 				}
 				rF.setLength(size - (Store.PRODUCT_KEY_MAX_SIZE*2) - Product.PRODUCT_SIZE);
