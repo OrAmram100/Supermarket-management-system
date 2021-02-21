@@ -151,33 +151,6 @@ public class Controller {
 
 
 
-		EventHandler<ActionEvent> update= new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				try {
-					theView.printObservers(model);;
-				} catch (Exception c) {
-					Alert alert = new Alert(Alert.AlertType.ERROR);
-					alert.setContentText(c.getMessage());
-				}
-			}
-		};
-		theView.addEventToUpdateObservers(update);
-
-
-
-		EventHandler<ActionEvent> sendMessages= new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				try {
-					theView.updateModel(model);
-				} catch (Exception c) {
-					Alert alert = new Alert(Alert.AlertType.ERROR);
-					alert.setContentText(c.getMessage());
-				}
-			}
-		};
-		theView.addEventToSendUpdate(sendMessages);
 
 	}
 

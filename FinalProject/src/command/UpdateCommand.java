@@ -1,8 +1,9 @@
 package command;
 
+import model.Product;
 import model.Store;
 
-public class UpdateCommand implements Command<Object>{
+public class UpdateCommand implements Command<Product>{
 	private Store store;
 	private String SerialNum;
 	private int price;
@@ -18,9 +19,8 @@ public class UpdateCommand implements Command<Object>{
 
 
 	@Override
-	public String execute() {
-		store.updateSale(SerialNum, price);
-		return null;
+	public Product execute() {
+		return store.updateSale(SerialNum, price);
 
 	}
 

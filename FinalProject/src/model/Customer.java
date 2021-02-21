@@ -11,7 +11,7 @@ public class Customer implements Observer {
 	private String customerName;
 	private String id;
 	private String phoneNumber;
-	private boolean wantUpdates;
+	private Boolean wantUpdates;
 	private final static int MAX_CUST_NAME = 20;
 	private final static int MAX_ID = 9;
 	private final static int Phone_Num = 10;
@@ -22,7 +22,7 @@ public class Customer implements Observer {
 		this.customerName = customerName;
 		this.id = id;
 		this.phoneNumber = phoneNumber;
-		this.wantUpdates = wantUpdates;
+		setWantUpdates(wantUpdates);
 	}
 
 	public String getCustomerName() {
@@ -37,10 +37,10 @@ public class Customer implements Observer {
 		return phoneNumber;
 	}
 
-	public boolean isWantUpdates() {
+	public boolean getWantUpdates() {
 		return wantUpdates;
 	}
-
+	
 	// SETTERS:
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
@@ -66,7 +66,7 @@ public class Customer implements Observer {
 	public String update(Observable obs, Product product) 
 	{
 		StringBuffer sf = new StringBuffer();
-		if(isWantUpdates())
+		if(getWantUpdates())
 		{
 			sf.append( this.getPhoneNumber() + "New Message Has Arrived\n");
 			sf.append(this.customerName + "Hi!\nNew sale to the product: !\n" +product + " from:" +((Store) obs).getName()+"\n");	
@@ -93,7 +93,8 @@ public class Customer implements Observer {
 	public void writeCustomerToFile(DataOutput dOut) throws IOException
 	{
 		binFile.writeStringToFile(this.customerName, MAX_CUST_NAME, dOut);
-		binFile.writeStringToFile(this.phoneNumber, Phone_Num, dOut);
+		binFile.writeStringToFile(this.id, MAX_ID, dOut);
+		binFile.writeStringToFile(this.phoneNumber, Phone_Num, dOut);		
 		dOut.writeBoolean(this.wantUpdates);
 	}
 }

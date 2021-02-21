@@ -1,6 +1,8 @@
 package view;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JOptionPane;
@@ -26,6 +28,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -72,23 +75,27 @@ public class View {
 	private Button showDetails;
 	private Button removeProduct;
 	private Button cancelProductAddition;
-	private Button removeAllProduct=new Button();
-	private Button okButton=new Button();
+	private Button removeAllProduct;
+	private Button okButton;
 	private Button makeNewSale;
 	private Button updateObserversAboutSale;
-	private Button startSendMessages=new Button();
 	private Scene mainScene, showDetailsScene, sortScene, findProductScene, addProductScene , makeSale, printObservers;
 	private String function;
+	private int numOfPrdoucts=0;
 	private ComboBox<SortType> sortComboBox;
+	private List<Product> allProducts = new ArrayList<Product>();
+
 
 
 	public View(Stage primaryStage, Store store) throws Exception {
 
 		MainWindow = primaryStage;
 		primaryStage.setTitle(store.getName());
+		okButton = new Button("confirm");
 		showDetails = new Button("show Details");
 		sortButton = new Button("sort details");
 		buttonSearch = new Button("find a product");
+		removeAllProduct = new Button("remove all products");
 		buttonAddProduct = new Button("add product");
 		removeProduct = new Button("remove a product");
 		makeNewSale = new Button("make new sale"); 
@@ -101,14 +108,13 @@ public class View {
 		buttonAddProduct.setFont(new Font("David", 20));
 		cancelProductAddition.setFont(new Font("David", 20));
 		makeNewSale.setFont(new Font("David", 20));
-		updateObserversAboutSale.setFont(new Font("David", 20));
 		Label title = new Label(" Welcome to Management system");
 		title.setFont(new Font(40));
 
 		VBox layoutInMainWindow = new VBox(20);
 		layoutInMainWindow.setAlignment(Pos.CENTER);
 		layoutInMainWindow.getChildren().addAll(title, showDetails, sortButton, buttonSearch, buttonAddProduct,
-				makeNewSale, updateObserversAboutSale);
+				makeNewSale);
 		layoutInMainWindow.setAlignment(Pos.CENTER);
 		mainScene = new Scene(layoutInMainWindow, 950, 760);
 		primaryStage.setScene(mainScene);
@@ -125,9 +131,10 @@ public class View {
 
 	public void makeASale(Store store) {
 		function = "makeSale";
-		Label title = new Label("new Sale");
+		Label title = new Label("updateObservers");
 		Button previous = new Button("Previous");
-		okButton = new Button("confirm");
+		updateObserversAboutSale.setVisible(false);
+		okButton.setVisible(true);
 		productKey = new TextField();
 		productKey.setVisible(true);
 		productKeyTxt = new Text("product serial (up to 9 chars)");
@@ -136,20 +143,33 @@ public class View {
 		sellingPriceTxt = new Text("new price:");
 		VBox addNewSale = new VBox(10);
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
-		addNewSale.getChildren().addAll(title, productKeyTxt, productKey,sellingPriceTxt, sellingPrice,  okButton, previous);		makeSale = new Scene(addNewSale, 1000, 800);
+		addNewSale.getChildren().addAll(title, productKeyTxt, productKey,sellingPriceTxt, sellingPrice,  okButton,updateObserversAboutSale, previous);	
+		makeSale = new Scene(addNewSale, 1000, 800);
 		getMainWindow().setScene(makeSale);
+
 
 	}
 
-	public void printObservers(Store store) {
+
+	public void printObservers(Store store,List<Product> products) {
 		function = "printObservers";
-		Label title = new Label("send messages");
-		startSendMessages = new Button("send");
 		Button previous = new Button("Previous");
 		VBox print = new VBox(10);
-		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
-
-		print.getChildren().addAll(title,startSendMessages,  previous);
+		previous.setOnAction(e -> getMainWindow().setScene(mainScene));	
+		String observers= new printObserversCommand(store,products).execute();
+		Label label = new Label(observers);
+		label.setVisible(true);
+		label.setLayoutX(20);
+		label.setLayoutY(20);
+		label.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+		label.setMaxWidth(1000);
+		label.setWrapText(true);
+		label.wrapTextProperty();
+		label.setAlignment(Pos.TOP_CENTER);
+		ScrollPane sp = new ScrollPane();
+		sp.setVisible(true);
+		sp.setContent(label);
+		print.getChildren().addAll(sp,label,  previous);
 		printObservers = new Scene(print, 1000, 800);
 		getMainWindow().setScene(printObservers);
 
@@ -159,9 +179,9 @@ public class View {
 	public void sortDetails(Store store) {
 		function = "Sorting";
 		Button previous = new Button("Previous");
-		Button okButton = new Button("confirm");
+		okButton.setVisible(true);
 		sortComboBox = new ComboBox<SortType>();
-		sortComboBox.getItems().addAll(Store.SortType.values());//roni change this please
+		sortComboBox.getItems().addAll(Store.SortType.values());
 		VBox sortVbox = new VBox(10);
 		Label title = new Label("Sorting details");
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
@@ -173,7 +193,7 @@ public class View {
 
 	public void findAProduct(Store store) {
 		function = "findAProduct";
-		okButton = new Button("confirm");
+		okButton.setVisible(true);;
 		Button previous = new Button("Previous");
 		serial = new TextField();
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
@@ -190,7 +210,7 @@ public class View {
 
 	public void addProduct(Store store) {
 		function = "addProduct";
-		okButton = new Button("confirm");
+		okButton.setVisible(true);
 		Button previous = new Button("Previous");
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
 		Label title = new Label("add a product");
@@ -230,8 +250,8 @@ public class View {
 
 	public void showDeteails(Store store) {
 		function = "showDeteails";
-		removeAllProduct = new Button("remove all products");
-		cancelProductAddition = new Button("cancel product addition");
+		removeAllProduct.setVisible(true);
+		cancelProductAddition.setVisible(true);
 		Label title = new Label("show details");
 		title.setTextFill(Color.DARKBLUE);
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
@@ -252,8 +272,8 @@ public class View {
 		col6.setCellValueFactory(new PropertyValueFactory<>("id"));
 		TableColumn<Product, String> col7 = new TableColumn<>("customerPhone");
 		col7.setCellValueFactory(new PropertyValueFactory<>("customerPhone"));
-		TableColumn<Product, String> col8 = new TableColumn<>("wantsUpdate");
-		col8.setCellValueFactory(new PropertyValueFactory<>("wantsUpdate"));
+		TableColumn<Product, String> col8 = new TableColumn<>("wantUpdates");
+		col8.setCellValueFactory(new PropertyValueFactory<>("wantUpdates"));
 		TableColumn<Product, String> col9 = new TableColumn<>("Profit");
 		col9.setCellValueFactory(new PropertyValueFactory<>("profit"));
 		col1.setPrefWidth(160);
@@ -276,7 +296,7 @@ public class View {
 			Product p = (Product) store.getProducts().get(key);
 			t = new storeDetailesTable(key, p.getProductName(), "" + p.getPriceToStore(), p.getPriceToCostumer() + "",
 					p.getCustomer().getCustomerName(), p.getCustomer().getId(), p.getCustomer().getPhoneNumber(),
-					p.getCustomer().isWantUpdates() + "",(p.getPriceToCostumer()-p.getPriceToStore()));
+					p.getCustomer().getWantUpdates()+ "",(p.getPriceToCostumer()-p.getPriceToStore()));
 			data.add(t);
 		}
 		table.setItems(data);
@@ -304,7 +324,7 @@ public class View {
 
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent()){
-			int check = new RemoveProductCommand(store, result.toString()).execute();
+			int check = new RemoveProductCommand(store, result.get()).execute();
 			if(check==0)
 			{
 				Alert art = new Alert(Alert.AlertType.ERROR);
@@ -317,6 +337,7 @@ public class View {
 				msg.setContentText("removed successfully!");
 				msg.show();
 			}
+			getMainWindow().setScene(mainScene);
 
 
 		}
@@ -329,14 +350,15 @@ public class View {
 		alert.setTitle("Delete all products");
 		alert.setHeaderText("Look, a Confirmation Dialog");
 		alert.setContentText("Are you ok with this?");
-
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK){
 			new RemoveAllProducts(store).execute();
 			alert.setContentText("deleted sucessfully");
+			alert.show();
 		} else {
 			getMainWindow().setScene(showDetailsScene);
 		}
+		getMainWindow().setScene(mainScene);
 	}
 
 
@@ -355,8 +377,8 @@ public class View {
 				Alert a = new Alert(AlertType.ERROR);
 				a.setTitle("Error !!!");
 				a.setHeaderText("Look, an Error Dialog");
-				a.setContentText("Ooops, there was an error!you cant remove again");
-				alert.showAndWait();
+				a.setContentText("Ooops, there was an error!you cant remove ");
+				a.showAndWait();
 			}
 			else
 			{
@@ -364,9 +386,10 @@ public class View {
 				a2.setTitle("sucessful deletion");
 				a2.setHeaderText("Look, an Information Dialog");
 				a2.setContentText("the last product is deleted!");
+				a2.showAndWait();
+
 			}
-		} else {
-			getMainWindow().setScene(showDetailsScene);
+			getMainWindow().setScene(mainScene);
 		}
 	}
 
@@ -387,20 +410,19 @@ public class View {
 				art.setContentText(exception.getMessage());
 				art.show();
 			}
-
-			if (function == "Sorting") {
-				try {
-					new SortMapAccordingTypeCommand(model, (SortType)sortComboBox.getUserData()).execute();
-					Alert msg = new Alert(Alert.AlertType.CONFIRMATION);
-					msg.setContentText("sorted successfully!");
-					msg.show();
-				} catch (Exception c) {
-					Alert art = new Alert(Alert.AlertType.ERROR);
-					art.setContentText(c.getMessage());
-					art.show();
-				}
-			}
 		}
+		else if (function == "Sorting") {
+			try {
+				new SortMapAccordingTypeCommand(model, (SortType)sortComboBox.getValue()).execute();
+				Alert msg = new Alert(Alert.AlertType.CONFIRMATION);
+				msg.setContentText("sorted successfully!");
+				msg.show();
+			} catch (Exception c) {
+				Alert art = new Alert(Alert.AlertType.ERROR);
+				art.setContentText(c.getMessage());
+				art.show();
+			}
+		}		
 		else if (function == "addProduct") {
 			if (serial2.getText().isEmpty() || productName.getText().isEmpty() || storeCost.getText().isEmpty() || sellingPrice.getText().isEmpty()
 					||customerName.getText().isEmpty()|| CustomerId.getText().isEmpty()||CustomerPhone.getText().isEmpty()) {
@@ -417,7 +439,7 @@ public class View {
 					String id = CustomerId.getText();
 					String phone = CustomerPhone.getText();
 					Customer customer;
-					if(r1.isArmed())
+					if(r1.isSelected())
 					{
 						customer = new Customer(nameCustomer, id, phone, true);
 
@@ -438,6 +460,8 @@ public class View {
 					art.show();
 
 				}
+				getMainWindow().setScene(mainScene);
+
 			}
 		}
 		else if(function=="makeSale")
@@ -447,17 +471,41 @@ public class View {
 				Alert art = new Alert(Alert.AlertType.ERROR);
 				art.setContentText("Please fill all the details");
 				art.show();
+				getMainWindow().setScene(mainScene);
 			}
 			else
 			{
 				try {
 					String key=productKey.getText();
 					int price = Integer.parseInt(sellingPrice.getText());
-					new UpdateCommand(model, key, price).execute();
-					Alert msg 
-					= new Alert(Alert.AlertType.CONFIRMATION);
-					msg.setContentText(" updated successfully!");
-					msg.show();
+					numOfPrdoucts++;
+					boolean check=true;
+					if(allProducts.size()==0)
+						allProducts.add(new UpdateCommand(model, key, price).execute());
+					for(int i=0;i<numOfPrdoucts-1;i++)
+					{
+						allProducts.add(new UpdateCommand(model, key, price).execute());
+					}
+					for(int i=0;i<allProducts.size();i++)
+					{
+						if(allProducts.get(i)==null)
+						{
+							Alert art = new Alert(Alert.AlertType.ERROR);
+							art.setContentText("there is no product like this");
+							art.show();
+							check=false;
+							break;
+						}
+					}
+					if(check)
+					{
+						Alert msg 
+						= new Alert(Alert.AlertType.CONFIRMATION);
+						msg.setContentText(" updated successfully!");
+						updateObserversAboutSale.setVisible(true);
+						msg.show();
+						updateObserversAboutSale.setOnAction(e->printObservers(model, allProducts));
+					}
 				}
 				catch (Exception c) {
 					Alert art = new Alert(Alert.AlertType.ERROR);
@@ -468,20 +516,8 @@ public class View {
 			}
 		}
 
-		else if(function=="printObservers")
-		{
-			try {
-				new printObserversCommand(model).execute();
-			}
-			catch (Exception c) {
-				Alert art = new Alert(Alert.AlertType.ERROR);
-				art.setContentText(c.getMessage());
-				art.show();
-
-			}
-
-		}
 	}
+
 
 	public void addEventToConfirmButton(EventHandler<ActionEvent> confirm) {
 		okButton.setOnAction(confirm);
@@ -517,14 +553,10 @@ public class View {
 	public void addEventToSell(EventHandler<ActionEvent> makeSell) {
 		makeNewSale.setOnAction(makeSell);
 	}
-	public void addEventToUpdateObservers(EventHandler<ActionEvent> update) {
-		updateObserversAboutSale.setOnAction(update);
-	}
-	public void addEventToSendUpdate(EventHandler<ActionEvent> send) {
-		startSendMessages.setOnAction(send);
-	}
-	
-	
+
+
+
+
 	private void CloseProgram() throws Exception {
 
 		int answer = JOptionPane.showConfirmDialog(null, "Exit", "Exit? ", JOptionPane.YES_NO_OPTION);

@@ -1,23 +1,28 @@
 package command;
 
+import java.util.List;
+
+import model.Product;
 import model.Store;
 
-public class printObserversCommand implements Command<Object> {
+public class printObserversCommand implements Command<String> {
 	private Store store;
+	private List<Product>products;
 
 
 
-	public printObserversCommand(Store store) {
+	public printObserversCommand(Store store,List<Product> products) {
 
 		this.store = store;
+		this.products=products;
 	}
 
 
 
 	@Override
-	public Object execute() {
-		store.notifyObservers();
-		return null;
+	public String execute() {
+		return store.notifyObservers(products);
+		
 
 	}
 }

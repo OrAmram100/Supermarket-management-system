@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -129,26 +131,32 @@ public class Store implements Observable {
 		productsMomento = new Memento(products);
 		products.put(key, p);
 		this.numOfProducts++;
-		if(p.getCustomer().isWantUpdates())
+		if(p.getCustomer().getWantUpdates())
 			addObserver(p.getCustomer());
 		saveProductsToBinaryFile(FILE_NAME);
 
 	}
-	public int removeLastProduct()  {
+	public int removeLastProduct() throws FileNotFoundException  {
 
 		if(productsMomento== null)
 			return 0;
+		String lastKey=getLastKey();
+		iterationInFile(lastKey, 2);
+
 		products = productsMomento.getProductsMap();
 		productsMomento =null;
-
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setContentText("There is no product to delete");            
 
 		return 1;
 
 	}
 
-
+	private  String getLastKey() {
+		String lastObject = "";
+		for (Map.Entry<String, Product> entry : products.entrySet()) {
+			lastObject = entry.getKey();
+		}
+		return lastObject;
+	}
 	public int removeProduct(String SerialNum,int menu) {
 		Product p = findProduct(SerialNum);
 		if(p==null)
@@ -160,14 +168,19 @@ public class Store implements Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		numOfProducts--;
 
 		return 1;
 	}
 
 	public Product findProduct(String SerialNum){
 
-		if(products.containsKey(SerialNum))
-			return products.get(SerialNum);
+		Iterator<Entry<String, Product>> it = products.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, Product> en = it.next();
+			if(en.getKey().equalsIgnoreCase(SerialNum))
+				return products.get(SerialNum);
+		}
 		return null;
 	}
 
@@ -187,7 +200,6 @@ public class Store implements Observable {
 		try {
 			iterationInFile(null, menu);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -292,19 +304,21 @@ public class Store implements Observable {
 	}
 	public int readProductsFromBinaryFile(String fileName) throws IOException 
 	{
-			RandomAccessFile rF = new RandomAccessFile(FILE_NAME, "r");
-			int size = (int)(rF.length() / (PRODUCT_KEY_MAX_SIZE + Product.PRODUCT_SIZE));
-				for(int i =0 ; i < size ; i++)
-				{
-					String key = binFile.readStringFromFile(PRODUCT_KEY_MAX_SIZE, rF);
-					Product p = Product.readProductFromFile(rF);
-					products.put(key ,p);
-				}
+		RandomAccessFile rF = new RandomAccessFile(FILE_NAME, "r");
+		int size = (int)(rF.length() / (PRODUCT_KEY_MAX_SIZE + Product.PRODUCT_SIZE));
+		for(int i =0 ; i < size ; i++)
+		{
+			String key = binFile.readStringFromFile(PRODUCT_KEY_MAX_SIZE, rF);
+			Product p = Product.readProductFromFile(rF);
+			products.put(key ,p);
+			if(p.getCustomer().getWantUpdates())
+			{
+				CustomersToUpdate.add(p.getCustomer());
+			}
+		}
 
-				rF.close();
-				
-			
-		
+
+		rF.close();
 
 		return 1;   
 	}
@@ -321,7 +335,7 @@ public class Store implements Observable {
 		return sum;
 	}
 
-	public void updateSale(String key,int newPrice)
+	public Product updateSale(String key,int newPrice)
 	{
 		Iterator<Entry<String, Product>> it = products.entrySet().iterator();
 		while (it.hasNext()) {
@@ -329,9 +343,11 @@ public class Store implements Observable {
 			if(en.getKey().equalsIgnoreCase(key))
 			{
 				en.getValue().setPriceToCostumer(newPrice);
-				notifyObserver(en.getValue().getCustomer(),en.getValue());
+				return en.getValue();
+//				notifyObserver(en.getValue().getCustomer(),en.getValue());
 			}
 		}
+		return null;
 	}
 	@Override
 	public void addObserver(Observer o)
@@ -353,19 +369,18 @@ public class Store implements Observable {
 
 
 	@Override
-	public void notifyObservers()    //print
+	public String notifyObservers(List<Product>products)    //print
 	{
-		for(Observer o: CustomersToUpdate)
+		StringBuffer sb = new StringBuffer();
+		for(int i=0; i< products.size();i++)
 		{
-			Iterator<Entry<String, Product>> it = products.entrySet().iterator();
-			while (it.hasNext()) {
-				Entry<String, Product> en = it.next();
-				if(((Customer)o).getId().equalsIgnoreCase(en.getValue().getCustomer().getId()))
-				{
-					o.update(this, en.getValue());		
-				}
-			}
+			for(Observer o: CustomersToUpdate)
+			{
+				if(((products.get(i).getCustomer().getId().equalsIgnoreCase(((Customer)o).getId()))))
+					sb.append(o.update(this,products.get(i))+"\n");		
+				}		
 		}
+		return sb.toString();
 	}
 
 
@@ -376,6 +391,9 @@ public class Store implements Observable {
 		o.update(this, product);
 	}
 
+
+
+	
 
 
 
