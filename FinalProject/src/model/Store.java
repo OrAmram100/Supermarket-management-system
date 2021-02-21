@@ -147,7 +147,7 @@ public class Store implements Observable {
 		productsMomento = new Memento(products);
 		products.put(key, p);
 		this.numOfProducts++;
-		if(p.getCustomer().getWantUpdates())
+		if(p.getCustomer().isWantUpdates())
 			addObserver(p.getCustomer());
 		saveProductsToBinaryFile(FILE_NAME);
 
@@ -335,7 +335,7 @@ public class Store implements Observable {
 			String key = binFile.readStringFromFile(PRODUCT_KEY_MAX_SIZE, rF);
 			Product p = Product.readProductFromFile(rF);
 			products.put(key ,p);
-			if(p.getCustomer().getWantUpdates())
+			if(p.getCustomer().isWantUpdates())
 			{
 				CustomersToUpdate.add(p.getCustomer());
 			}
@@ -395,11 +395,13 @@ public class Store implements Observable {
 	@Override
 	public String notifyObservers(List<Product>products)    //print
 	{
+		
 		StringBuffer sb = new StringBuffer();
 		for(int i=0; i< products.size();i++)
 		{
 			for(Observer o: CustomersToUpdate)
 			{
+				
 			//	if(((products.get(i).getCustomer().getId().equalsIgnoreCase(((Customer)o).getId()))))
 					sb.append(o.update(this,products.get(i))+"\n");		
 				}		

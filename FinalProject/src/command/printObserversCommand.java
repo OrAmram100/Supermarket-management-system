@@ -2,12 +2,14 @@ package command;
 
 import java.util.List;
 
+import controller.Controller;
 import model.Product;
 import model.Store;
 
 public class printObserversCommand implements Command<String> {
 	private Store store;
 	private List<Product>products;
+	
 
 
 
@@ -15,8 +17,8 @@ public class printObserversCommand implements Command<String> {
 
 		this.store = store;
 		this.products=products;
+		
 	}
-
 
 
 	@Override

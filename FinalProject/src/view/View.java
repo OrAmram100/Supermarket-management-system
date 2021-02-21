@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-
 import javax.swing.JOptionPane;
-
 import command.AddProductCommand;
 import command.FindProductCommand;
 import command.RemoveAllProducts;
@@ -35,7 +33,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -108,7 +105,9 @@ public class View {
 		buttonAddProduct.setFont(new Font("David", 20));
 		cancelProductAddition.setFont(new Font("David", 20));
 		makeNewSale.setFont(new Font("David", 20));
-		Label title = new Label(" Welcome to Management system");
+		showDetails.setFont(new Font("David", 20));
+		okButton.setFont(new Font("David", 20));
+		Label title = new Label("Welcome to Management system");
 		title.setFont(new Font(40));
 
 		VBox layoutInMainWindow = new VBox(20);
@@ -131,8 +130,10 @@ public class View {
 
 	public void makeASale(Store store) {
 		function = "makeSale";
-		Label title = new Label("updateObservers");
+		Label title = new Label("create sale");
+		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
 		Button previous = new Button("Previous");
+		updateObserversAboutSale.setFont(Font.font("Calibri", FontWeight.BOLD, 40));
 		updateObserversAboutSale.setVisible(false);
 		okButton.setVisible(true);
 		productKey = new TextField();
@@ -153,6 +154,8 @@ public class View {
 
 	public void printObservers(Store store,List<Product> products) {
 		function = "printObservers";
+		Label title = new Label("print Observers");
+		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
 		Button previous = new Button("Previous");
 		VBox print = new VBox(10);
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));	
@@ -169,7 +172,7 @@ public class View {
 		ScrollPane sp = new ScrollPane();
 		sp.setVisible(true);
 		sp.setContent(label);
-		print.getChildren().addAll(sp,label,  previous);
+		print.getChildren().addAll(title,sp,label,  previous);
 		products.clear();
 		printObservers = new Scene(print, 1000, 800);
 		numOfPrdoucts=0;
@@ -185,9 +188,12 @@ public class View {
 		sortComboBox = new ComboBox<SortType>();
 		sortComboBox.getItems().addAll(Store.SortType.values());
 		VBox sortVbox = new VBox(10);
+		sortVbox.setAlignment(Pos.CENTER);
 		Label title = new Label("Sorting details");
+		Label choose = new Label("please choose the way to sorf from the following options:");
+		choose.setFont(Font.font("Calibri", FontWeight.BLACK, 15));
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
-		sortVbox.getChildren().addAll(title, sortComboBox, okButton, previous);
+		sortVbox.getChildren().addAll(title,choose, sortComboBox, okButton, previous);
 		sortScene = new Scene(sortVbox, 1000, 800);
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
 		getMainWindow().setScene(sortScene);
@@ -211,13 +217,15 @@ public class View {
 
 
 	public void addProduct(Store store) {
+
 		function = "addProduct";
 		okButton.setVisible(true);
 		Button previous = new Button("Previous");
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
 		Label title = new Label("add a product");
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
-		product = new Label("Product Deteails");
+		product = new Label("Product Deteails:");
+		product.setFont(Font.font("Calibri", FontWeight.BOLD, 25));
 		serial2 = new TextField();
 		serial2.setVisible(true);
 		serialTxt2 = new Text("product serial (up to 9 chars)");
@@ -230,7 +238,8 @@ public class View {
 		sellingPrice = new TextField();
 		sellingPrice.setVisible(true);
 		sellingPriceTxt = new Text("please enter selling price:");
-		customer = new Label("Customer Deteails");
+		customer = new Label("Customer Deteails:");
+		customer.setFont(Font.font("Calibri", FontWeight.BOLD, 25));
 		customerName = new TextField();
 		customerName.setVisible(true);
 		customerNameTxt = new Text("please enter name:");
@@ -253,40 +262,41 @@ public class View {
 	public void showDeteails(Store store) {
 		function = "showDeteails";
 		removeAllProduct.setVisible(true);
+		removeAllProduct.setFont(new Font("David", 20));
 		cancelProductAddition.setVisible(true);
+		cancelProductAddition.setFont(new Font("David", 20));
 		Label title = new Label("show details");
-		title.setTextFill(Color.DARKBLUE);
-		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
+		title.setFont(Font.font("Calibri", FontWeight.BOLD, 30));
 		Label profit = new Label("The profit is:"+store.calculateProfit());
-
+		profit.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
 		TableView table = new TableView();
-		TableColumn<Product, String> col1 = new TableColumn<>("serial");
+		TableColumn<Product, String> col1 = new TableColumn<>("Serial");
 		col1.setCellValueFactory(new PropertyValueFactory<>("serial"));
-		TableColumn<Product, String> col2 = new TableColumn<>("productName");
+		TableColumn<Product, String> col2 = new TableColumn<>("Product name");
 		col2.setCellValueFactory(new PropertyValueFactory<>("productName"));
-		TableColumn<Product, String> col3 = new TableColumn<>("priceToStore");
+		TableColumn<Product, String> col3 = new TableColumn<>("Buying price");
 		col3.setCellValueFactory(new PropertyValueFactory<>("priceToStore"));
-		TableColumn<Product, String> col4 = new TableColumn<>("sellPrice");
+		TableColumn<Product, String> col4 = new TableColumn<>("Selling price");
 		col4.setCellValueFactory(new PropertyValueFactory<>("sellPrice"));
-		TableColumn<Product, String> col5 = new TableColumn<>("customerName");
+		TableColumn<Product, String> col5 = new TableColumn<>("Customer name");
 		col5.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-		TableColumn<Product, String> col6 = new TableColumn<>("Id");
+		TableColumn<Product, String> col6 = new TableColumn<>("Customer ID");
 		col6.setCellValueFactory(new PropertyValueFactory<>("id"));
-		TableColumn<Product, String> col7 = new TableColumn<>("customerPhone");
+		TableColumn<Product, String> col7 = new TableColumn<>("Customer Phone");
 		col7.setCellValueFactory(new PropertyValueFactory<>("customerPhone"));
-		TableColumn<Product, String> col8 = new TableColumn<>("wantUpdates");
+		TableColumn<Product, String> col8 = new TableColumn<>("Want updates");
 		col8.setCellValueFactory(new PropertyValueFactory<>("wantUpdates"));
 		TableColumn<Product, String> col9 = new TableColumn<>("Profit");
 		col9.setCellValueFactory(new PropertyValueFactory<>("profit"));
-		col1.setPrefWidth(160);
-		col2.setPrefWidth(160);
-		col3.setPrefWidth(160);
-		col4.setPrefWidth(160);
-		col5.setPrefWidth(160);
-		col6.setPrefWidth(160);
-		col7.setPrefWidth(160);
-		col8.setPrefWidth(160);
-		col9.setPrefWidth(160);
+		col1.setPrefWidth(111);
+		col2.setPrefWidth(111);
+		col3.setPrefWidth(111);
+		col4.setPrefWidth(111);
+		col5.setPrefWidth(111);
+		col6.setPrefWidth(111);
+		col7.setPrefWidth(111);
+		col8.setPrefWidth(111);
+		col9.setPrefWidth(111);
 
 		ObservableList<storeDetailesTable> data = FXCollections.observableArrayList();
 		table.getColumns().addAll(col1, col2, col3, col4, col5, col6, col7, col8,col9);
@@ -297,14 +307,15 @@ public class View {
 			String key = itr.next();
 			Product p = (Product) store.getProducts().get(key);
 			t = new storeDetailesTable(key, p.getProductName(), "" + p.getPriceToStore(), p.getPriceToCostumer() + "",
-					p.getCustomer().getCustomerName(), p.getCustomer().getId(), p.getCustomer().getPhoneNumber(),
-					p.getCustomer().getWantUpdates()+ "",(p.getPriceToCostumer()-p.getPriceToStore()));
+					p.getCustomer().getCustomerName(), p.getCustomer().getCustomerId(), p.getCustomer().getPhoneNumber(),""
+							+ "" +p.getCustomer().isWantUpdates()+ "",(p.getPriceToCostumer()-p.getPriceToStore()));
 			data.add(t);
 		}
 		table.setItems(data);
 		Button previous = new Button("Previous");
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
 		vbox.getChildren().addAll(title, table,profit, removeProduct, removeAllProduct, cancelProductAddition, previous);
+		removeProduct.setFont(new Font("David", 20));
 		removeProduct.setVisible(true);
 
 		showDetailsScene = new Scene(vbox, 1000, 800);
@@ -575,7 +586,7 @@ public class View {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Information Dialog");
 		alert.setHeaderText("note");
-		alert.setContentText("There are no products in the file!!!please add!");
+		alert.setContentText("There is no file to read!\nadding product will create file");
 
 		alert.showAndWait();
 	}
@@ -589,10 +600,11 @@ public class View {
 			return;
 		}
 		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Product found!!!");
+		alert.setTitle("Product found!");
+		alert.setResizable(true);
 		alert.setHeaderText(null);
-		alert.setContentText(product.toString());
-
+		String content = String.format(product.toString());
+		alert.setContentText(content);
 		alert.showAndWait();
 	}
 }

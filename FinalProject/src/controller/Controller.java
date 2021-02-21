@@ -18,7 +18,7 @@ public class Controller {
 
 
 		try {
-			theModel.readProductsFromBinaryFile("products txt");
+			theModel.readProductsFromBinaryFile("products.txt");
 		} catch ( Exception c) {
 			Label l = new Label("There are no products inside the file! ");
 			l.setTextFill(Color.RED);
@@ -82,7 +82,8 @@ public class Controller {
 		EventHandler<ActionEvent> addProduct = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				try {
+			
+						try {
 					theView.addProduct(model);
 				} catch (Exception c) {
 					Alert alert = new Alert(Alert.AlertType.ERROR);
