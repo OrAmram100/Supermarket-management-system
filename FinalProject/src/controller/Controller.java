@@ -1,5 +1,6 @@
 package controller;
 
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -149,13 +150,10 @@ public class Controller {
 			}
 		};
 		theView.addEventToSell(sell);
-
-
-
+			
+		}
+	
 
 	}
 
 
-
-
-}

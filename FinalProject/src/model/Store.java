@@ -18,8 +18,9 @@ import java.util.Map.Entry;
 
 import obsrever.Observable;
 import obsrever.Observer;
+import view.View;
 
-public class Store implements Observable {
+public class Store implements Observable  {
 	private static Store _instance  = null;
 	public static final int PRODUCT_KEY_MAX_SIZE = 9 ; 
 	public enum SortType {eByAscending , eByDescending , eByIncome};
@@ -70,8 +71,8 @@ public class Store implements Observable {
 			tempMap.putAll(products);
 			removeAllProducts(3);
 			for(Iterator<Entry<String, Product>> iterator = tempMap.entrySet().iterator(); iterator.hasNext(); ) {
-			    Entry<String, Product> entry = iterator.next();
-			    addProduct(entry.getKey(),entry.getValue());
+				Entry<String, Product> entry = iterator.next();
+				addProduct(entry.getKey(),entry.getValue());
 			}
 			products= tempMap;
 			break;
@@ -82,8 +83,8 @@ public class Store implements Observable {
 			tempMap.putAll(products);
 			removeAllProducts(3);
 			for(Iterator<Entry<String, Product>> iterator = tempMap.entrySet().iterator(); iterator.hasNext(); ) {
-			    Entry<String, Product> entry = iterator.next();
-			    addProduct(entry.getKey(),entry.getValue());
+				Entry<String, Product> entry = iterator.next();
+				addProduct(entry.getKey(),entry.getValue());
 			}
 			products =tempMap;
 			break;
@@ -95,8 +96,8 @@ public class Store implements Observable {
 			tempMap.putAll(products);
 			removeAllProducts(3);
 			for(Iterator<Entry<String, Product>> iterator = tempMap.entrySet().iterator(); iterator.hasNext(); ) {
-			    Entry<String, Product> entry = iterator.next();
-			    addProduct(entry.getKey(),entry.getValue());
+				Entry<String, Product> entry = iterator.next();
+				addProduct(entry.getKey(),entry.getValue());
 			}
 			products = new LinkedHashMap<String, Product>(tempMap);
 			break;
@@ -225,7 +226,7 @@ public class Store implements Observable {
 	public Map<String, Product> getProducts() {
 		return products;
 	}
-	public String getName() {
+	public String getNameStore() {
 		return name;
 	}
 
@@ -257,7 +258,7 @@ public class Store implements Observable {
 		this.comparator = comparator;
 
 	}
-	public void setName(String name) {
+	public void setNameStore(String name) {
 		this.name = name;
 	}
 
@@ -286,7 +287,7 @@ public class Store implements Observable {
 		public int compare(String arg0, String arg1) {
 			return 1;
 		}
-		
+
 	}
 
 	public void printAllCustomersSet() {
@@ -368,7 +369,7 @@ public class Store implements Observable {
 			{
 				en.getValue().setPriceToCostumer(newPrice);
 				return en.getValue();
-//				notifyObserver(en.getValue().getCustomer(),en.getValue());
+				//				notifyObserver(en.getValue().getCustomer(),en.getValue());
 			}
 		}
 		return null;
@@ -390,26 +391,41 @@ public class Store implements Observable {
 	}
 
 
+	public class updateObservers extends Thread{
+		private List<Product>products;
+		private View view;
+		private Store store;
 
 
-	@Override
-	public String notifyObservers(List<Product>products)    //print
-	{
-		
-		StringBuffer sb = new StringBuffer();
-		for(int i=0; i< products.size();i++)
+		public updateObservers(List<Product>products,View view,Store store)    //print
 		{
-			for(Observer o: CustomersToUpdate)
-			{
-				
-			//	if(((products.get(i).getCustomer().getId().equalsIgnoreCase(((Customer)o).getId()))))
-					sb.append(o.update(this,products.get(i))+"\n");		
-				}		
+			this.products=products;
+			this.view=view;
+			this.store=store;
 		}
-		return sb.toString();
+
+
+
+		@Override
+		public void run() {	
+			for(int i=0; i< products.size();i++)
+			{
+				for(Observer o: CustomersToUpdate)
+				{
+					
+					if(((products.get(i).getCustomer().getCustomerId().equalsIgnoreCase(((Customer)o).getCustomerId())))) {
+						view.printLabels(o.update(store,products.get(i))+"\n");	
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}		
+			}
+		}
 	}
-
-
+	
 
 
 	@Override
@@ -419,10 +435,20 @@ public class Store implements Observable {
 
 
 
-	
+	@Override
+	public void notifyObservers(List<Product> products, View view) {
+		updateObservers msg = new updateObservers(products, view,this);
+		msg.run();
+	}
+
+
+
+
 
 
 
 
 
 }
+
+
