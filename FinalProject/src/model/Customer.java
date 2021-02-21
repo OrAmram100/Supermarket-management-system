@@ -69,8 +69,8 @@ public class Customer extends Thread implements Observer {
 		StringBuffer sf = new StringBuffer();
 		if(isWantUpdates())
 		{
-			sf.append( this.getPhoneNumber() + " New Message Has Arrived!\n");
-			sf.append(this.customerName + " Hi!\nNew sale to the product: \n" +product + " from:" +((Store) obs).getName()+"\n");	
+//			sf.append( this.getPhoneNumber() + " New Message Has Arrived!\n");
+//			sf.append(this.customerName + " Hi!\nNew sale to the product: \n" +product + " from:" +((Store) obs).getNameStore()+"\n");	
 			sf.append(sendMSG());
 		}
 		return sf.toString();

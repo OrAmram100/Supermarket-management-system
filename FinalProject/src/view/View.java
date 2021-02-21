@@ -13,6 +13,7 @@ import command.RemoveProductCommand;
 import command.SortMapAccordingTypeCommand;
 import command.UpdateCommand;
 import command.printObserversCommand;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -81,13 +82,14 @@ public class View {
 	private int numOfPrdoucts=0;
 	private ComboBox<SortType> sortComboBox;
 	private List<Product> allProducts = new ArrayList<Product>();
+	private VBox print;
 
 
 
 	public View(Stage primaryStage, Store store) throws Exception {
 
 		MainWindow = primaryStage;
-		primaryStage.setTitle(store.getName());
+		primaryStage.setTitle(store.getNameStore());
 		okButton = new Button("confirm");
 		showDetails = new Button("show Details");
 		sortButton = new Button("sort details");
@@ -157,22 +159,10 @@ public class View {
 		Label title = new Label("print Observers");
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
 		Button previous = new Button("Previous");
-		VBox print = new VBox(10);
+		print = new VBox(10);
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));	
-		String observers= new printObserversCommand(store,products).execute();
-		Label label = new Label(observers);
-		label.setVisible(true);
-		label.setLayoutX(20);
-		label.setLayoutY(20);
-		label.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-		label.setMaxWidth(1000);
-		label.setWrapText(true);
-		label.wrapTextProperty();
-		label.setAlignment(Pos.TOP_CENTER);
-		ScrollPane sp = new ScrollPane();
-		sp.setVisible(true);
-		sp.setContent(label);
-		print.getChildren().addAll(title,sp,label,  previous);
+		new printObserversCommand(store,products,this).execute();
+		print.getChildren().addAll(title, previous);
 		products.clear();
 		printObservers = new Scene(print, 1000, 800);
 		numOfPrdoucts=0;
@@ -606,5 +596,22 @@ public class View {
 		String content = String.format(product.toString());
 		alert.setContentText(content);
 		alert.showAndWait();
+	}
+
+	public void printLabels(String string)
+	{
+		Label label = new Label(string);
+		label.setVisible(true);
+		label.setLayoutX(20);
+		label.setLayoutY(20);
+		label.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+		label.setMaxWidth(1000);
+		label.setWrapText(true);
+		label.wrapTextProperty();
+		label.setAlignment(Pos.TOP_CENTER);
+		Platform.runLater(
+				() -> {
+					 print.getChildren().addAll(label);
+				});
 	}
 }
