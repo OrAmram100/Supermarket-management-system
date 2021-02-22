@@ -83,6 +83,8 @@ public class View {
 	private ComboBox<SortType> sortComboBox;
 	private List<Product> allProducts = new ArrayList<Product>();
 	private VBox print;
+	private VBox addNewSale;
+	private ScrollPane sp;
 
 
 
@@ -132,6 +134,8 @@ public class View {
 
 	public void makeASale(Store store) {
 		function = "makeSale";
+		sp = new ScrollPane();
+		sp.setVisible(true);
 		Label title = new Label("create sale");
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
 		Button previous = new Button("Previous");
@@ -144,32 +148,33 @@ public class View {
 		sellingPrice = new TextField();
 		sellingPrice.setVisible(true);
 		sellingPriceTxt = new Text("new price:");
-		VBox addNewSale = new VBox(10);
+		 addNewSale = new VBox(10);
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
-		addNewSale.getChildren().addAll(title, productKeyTxt, productKey,sellingPriceTxt, sellingPrice,  okButton,updateObserversAboutSale, previous);	
+		addNewSale.getChildren().addAll(title,sp, productKeyTxt, productKey,sellingPriceTxt, sellingPrice,  okButton,updateObserversAboutSale, previous);	
 		makeSale = new Scene(addNewSale, 1000, 800);
 		getMainWindow().setScene(makeSale);
-
-
-	}
-
-
-	public void printObservers(Store store,List<Product> products) {
-		function = "printObservers";
-		Label title = new Label("print Observers");
-		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
-		Button previous = new Button("Previous");
-		print = new VBox(10);
-		previous.setOnAction(e -> getMainWindow().setScene(mainScene));	
-		new printObserversCommand(store,products,this).execute();
-		print.getChildren().addAll(title, previous);
-		products.clear();
-		printObservers = new Scene(print, 1000, 800);
 		numOfPrdoucts=0;
-		getMainWindow().setScene(printObservers);
+		getMainWindow().show();
 
 
 	}
+
+
+//	public void printObservers(Store store,List<Product> products) {
+//		function = "printObservers";
+//		Label title = new Label("print Observers");
+//		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
+//		Button previous = new Button("Previous");
+//		print = new VBox(10);
+//		previous.setOnAction(e -> getMainWindow().setScene(mainScene));	
+//		new printObserversCommand(store,products,this).execute();
+//		print.getChildren().addAll(title, previous);
+//		printObservers = new Scene(print, 1000, 800);
+//		getMainWindow().setScene(printObservers);
+//		products.clear();
+//
+//
+//	}
 
 	public void sortDetails(Store store) {
 		function = "Sorting";
@@ -508,7 +513,8 @@ public class View {
 						msg.setContentText(" updated successfully!");
 						updateObserversAboutSale.setVisible(true);
 						msg.show();
-						updateObserversAboutSale.setOnAction(e->printObservers(model, allProducts));
+						updateObserversAboutSale.setOnAction(e->new printObserversCommand(model,allProducts,this).execute());
+						numOfPrdoucts=0;
 					}
 				}
 				catch (Exception c) {
@@ -600,6 +606,7 @@ public class View {
 
 	public void printLabels(String string)
 	{
+		// getMainWindow().setScene(printObservers);
 		Label label = new Label(string);
 		label.setVisible(true);
 		label.setLayoutX(20);
@@ -611,7 +618,8 @@ public class View {
 		label.setAlignment(Pos.TOP_CENTER);
 		Platform.runLater(
 				() -> {
-					 print.getChildren().addAll(label);
+					
+					 addNewSale.getChildren().add(label);
 				});
 	}
 }
