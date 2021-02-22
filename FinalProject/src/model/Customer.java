@@ -66,22 +66,19 @@ public class Customer extends Thread implements Observer {
 	@Override
 	public String update(Observable obs, Product product) 
 	{
-		StringBuffer sf = new StringBuffer();
+		String str ="";
 		if(isWantUpdates())
 		{
-			sf.append( this.getPhoneNumber() + " New Message Has Arrived!\n");
-			sf.append(this.customerName + " Hi!\nNew sale to the product: \n" +product + " from:" +((Store) obs).getNameStore()+"\n");	
-			sf.append(sendMSG());
+			str = (this.customerName + " ("+ this.getPhoneNumber()+ ") Hi!\nNew sale to the product:\n" +product.getProductName()+" cost :"+ product.getPriceToCostumer() + sendMSG());
 		}
-		return sf.toString();
+		return str;
 	}
 
 	public String sendMSG() {
 		StringBuffer sf = new StringBuffer();
-		sf.append( "customer sent message back\n");
+		sf.append( "\ncustomer sent message back\n");
 		sf.append("from: " +this.getCustomerName()+ "\n");
-		String replay = this.getCustomerName();
-		return replay;
+		return sf.toString();
 
 	}
 

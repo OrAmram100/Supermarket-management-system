@@ -82,7 +82,7 @@ public class View {
 	private int numOfPrdoucts=0;
 	private ComboBox<SortType> sortComboBox;
 	private List<Product> allProducts = new ArrayList<Product>();
-	private VBox print;
+//	private VBox print;
 	private VBox addNewSale;
 	private ScrollPane sp;
 
@@ -136,10 +136,12 @@ public class View {
 		function = "makeSale";
 		sp = new ScrollPane();
 		sp.setVisible(true);
+		sp.pannableProperty().set(true);
+		
 		Label title = new Label("create sale");
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
 		Button previous = new Button("Previous");
-		updateObserversAboutSale.setFont(Font.font("Calibri", FontWeight.BOLD, 40));
+		updateObserversAboutSale.setFont(Font.font("Calibri", FontWeight.BOLD, 20));
 		updateObserversAboutSale.setVisible(false);
 		okButton.setVisible(true);
 		productKey = new TextField();
@@ -150,8 +152,9 @@ public class View {
 		sellingPriceTxt = new Text("new price:");
 		 addNewSale = new VBox(10);
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
-		addNewSale.getChildren().addAll(title,sp, productKeyTxt, productKey,sellingPriceTxt, sellingPrice,  okButton,updateObserversAboutSale, previous);	
-		makeSale = new Scene(addNewSale, 1000, 800);
+		addNewSale.getChildren().addAll(title, productKeyTxt, productKey,sellingPriceTxt, sellingPrice,  okButton,updateObserversAboutSale, previous);	
+		sp.setContent(addNewSale);
+		makeSale = new Scene(sp, 1000, 800);
 		getMainWindow().setScene(makeSale);
 		numOfPrdoucts=0;
 		getMainWindow().show();
