@@ -77,7 +77,7 @@ public class View {
 	private Button okButton;
 	private Button makeNewSale;
 	private Button updateObserversAboutSale;
-	private Scene mainScene, showDetailsScene, sortScene, findProductScene, addProductScene , makeSale, printObservers;
+	private Scene mainScene, showDetailsScene, sortScene, findProductScene, addProductScene , makeSale;
 	private String function;
 	private int numOfPrdoucts=0;
 	private ComboBox<SortType> sortComboBox;
@@ -137,7 +137,7 @@ public class View {
 		sp = new ScrollPane();
 		sp.setVisible(true);
 		sp.pannableProperty().set(true);
-		
+		allProducts.clear();
 		Label title = new Label("create sale");
 		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
 		Button previous = new Button("Previous");
@@ -155,6 +155,7 @@ public class View {
 		addNewSale.getChildren().addAll(title, productKeyTxt, productKey,sellingPriceTxt, sellingPrice,  okButton,updateObserversAboutSale, previous);	
 		sp.setContent(addNewSale);
 		makeSale = new Scene(sp, 1000, 800);
+		updateObserversAboutSale.setVisible(false);
 		getMainWindow().setScene(makeSale);
 		numOfPrdoucts=0;
 		getMainWindow().show();
@@ -506,6 +507,7 @@ public class View {
 							numOfPrdoucts=0;
 							art.show();
 							check=false;
+							allProducts.clear();
 							break;
 						}
 					}
@@ -516,8 +518,8 @@ public class View {
 						msg.setContentText(" updated successfully!");
 						updateObserversAboutSale.setVisible(true);
 						msg.show();
-						updateObserversAboutSale.setOnAction(e->new printObserversCommand(model,allProducts,this).execute());
 						numOfPrdoucts=0;
+						updateObserversAboutSale.setOnAction(e->new printObserversCommand(model,allProducts,this).execute());
 					}
 				}
 				catch (Exception c) {
@@ -586,6 +588,14 @@ public class View {
 		alert.setTitle("Information Dialog");
 		alert.setHeaderText("note");
 		alert.setContentText("There is no file to read!\nadding product will create file");
+
+		alert.showAndWait();
+	}
+	public void warningStage() {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Information Dialog");
+		alert.setHeaderText("note");
+		alert.setContentText("There are no updates to change!\n");
 
 		alert.showAndWait();
 	}

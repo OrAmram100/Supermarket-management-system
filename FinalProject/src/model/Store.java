@@ -36,6 +36,8 @@ public class Store implements Observable  {
 	private CompareProductByAscendingIdGenartor compareAscending;
 	private CompareProductByDescendingIdGenartor compareDescending;
 	private ComperatorProductByInsert compareByIncome;
+	//private Iterator<Entry<String, Product>> it;//erase
+
 
 	public static Store getInstance(String name) {
 		if(_instance==null)
@@ -134,7 +136,8 @@ public class Store implements Observable  {
 			while(iterator.hasNext()) {
 				entry = iterator.next();
 				iterator.remove();
-				removeProduct(entry.getKey(),2);
+				products.remove(entry.getKey());
+				iterator = new FileIterator().getIterator(FILE_NAME);
 			}
 
 		}
@@ -231,9 +234,9 @@ public class Store implements Observable  {
 	}
 
 
-	public int getNumOfProducts() {
-		return numOfProducts;
-	}
+//	public int getNumOfProducts() {
+//		return numOfProducts;
+//	}
 
 	public ArrayList<Observer> getCustomersToUpdate() {
 		return CustomersToUpdate;
@@ -289,6 +292,62 @@ public class Store implements Observable  {
 		}
 
 	}
+//	public Product findProductInFile(String catalogNumber) throws FileNotFoundException {
+//		it = new FileIterator().getIterator(FILE_NAME);
+//		while (it.hasNext()) {
+//			Map.Entry<String, Product> e = it.next();
+//			if (e.getKey().equalsIgnoreCase(catalogNumber))
+//				return e.getValue();
+//
+//		}
+//
+//		return null;
+//
+//	}
+
+//	public int removeProduct(String catalogNumber) throws FileNotFoundException {
+//		if(numOfProducts==0)
+//			return 0;
+//		products.remove(catalogNumber);
+//		removeProductFromFile(catalogNumber);
+//		numOfProducts--;
+//		return 1;
+
+		/*
+		 * Removing specific product ,and also from file with File Iterator.
+		 */
+
+	//}
+
+//	private void removeProductFromFile(String catalogNumber) throws FileNotFoundException {
+//		findProductInFile(catalogNumber);
+//		it.remove();
+//		
+//	}
+
+	public int getNumOfProducts() {
+		return numOfProducts;
+	}
+
+	public Map<String, Product> getMap() {
+		return products;
+	}
+
+//	public int removeAllProducts() throws FileNotFoundException {
+//		/*
+//		 * Remove all products from map and binary file with the iterator, if there are
+//		 * no products to remove, return 0, if all removed return 1.
+//		 */
+//		if(numOfProducts==0)
+//			return 0;
+//		for(Iterator<Entry<String, Product>> it = products.entrySet().iterator(); it.hasNext(); ) {
+//		    Entry<String, Product> entry = it.next();
+//		        it.remove();
+//		        removeProductFromFile(entry.getKey());
+//		    System.out.println(entry.getKey() + " " + entry.getValue());
+//		}
+//		return 1;
+//	}
 
 	public void printAllCustomersSet() {
 		Iterator<Customer> it = allCustomers.iterator();
@@ -333,6 +392,7 @@ public class Store implements Observable  {
 		int size = (int)(rF.length() / (PRODUCT_KEY_MAX_SIZE + Product.PRODUCT_SIZE));
 		for(int i =0 ; i < size ; i++)
 		{
+			numOfProducts++;
 			String key = binFile.readStringFromFile(PRODUCT_KEY_MAX_SIZE, rF);
 			Product p = Product.readProductFromFile(rF);
 			products.put(key ,p);
@@ -408,6 +468,8 @@ public class Store implements Observable  {
 
 		@Override
 		public void run() {	
+			if(products.size()>=1)
+			{
 			for(int i=0; i< products.size();i++)
 			{
 				for(Observer o: CustomersToUpdate)
@@ -422,8 +484,10 @@ public class Store implements Observable  {
 							e.printStackTrace();
 						}
 					}
-				}		
+				}
+			products.clear();
 			}
+		}
 		}
 	
 	
@@ -439,11 +503,19 @@ public class Store implements Observable  {
 	@Override
 	public void notifyObservers(List<Product> products, View view) {
 		Thread t= new  Thread(()->{
+		try
+		{
 			updateObservers msg = new updateObservers(products, view,this);
-			msg.run();
-		});
+		
+			msg.run();	
+		}
+			catch(Exception e) {
+				view.warningStage();
+			}
+		});	
 		t.start();
 	}
+	
 
 
 
