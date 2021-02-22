@@ -413,10 +413,11 @@ public class Store implements Observable  {
 				for(Observer o: CustomersToUpdate)
 				{
 					
-					if(((products.get(i).getCustomer().getCustomerId().equalsIgnoreCase(((Customer)o).getCustomerId())))) {
+					//if(((products.get(i).getCustomer().getCustomerId().equalsIgnoreCase(((Customer)o).getCustomerId())))) {
 						view.printLabels(o.update(store,products.get(i))+"\n");	
 						try {
 							Thread.sleep(2000);
+							System.out.println("hi");
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -424,7 +425,7 @@ public class Store implements Observable  {
 				}		
 			}
 		}
-	}
+	
 	
 
 
@@ -437,8 +438,11 @@ public class Store implements Observable  {
 
 	@Override
 	public void notifyObservers(List<Product> products, View view) {
-		updateObservers msg = new updateObservers(products, view,this);
-		msg.run();
+		Thread t= new  Thread(()->{
+			updateObservers msg = new updateObservers(products, view,this);
+			msg.run();
+		});
+		t.start();
 	}
 
 

@@ -73,7 +73,8 @@ public class FileIterator {
 					return;
 				}
 				while(hasNext()) {
-					int pos=last+=((Store.PRODUCT_KEY_MAX_SIZE*2)+Product.PRODUCT_SIZE);
+					last+=((Store.PRODUCT_KEY_MAX_SIZE*2)+Product.PRODUCT_SIZE);
+					int pos=last;
 					rF.seek(current);
 					String k = binFile.readStringFromFile(Store.PRODUCT_KEY_MAX_SIZE, rF);
 					Product p = Product.readProductFromFile(rF);
