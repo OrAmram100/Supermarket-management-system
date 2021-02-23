@@ -164,22 +164,6 @@ public class View {
 	}
 
 
-//	public void printObservers(Store store,List<Product> products) {
-//		function = "printObservers";
-//		Label title = new Label("print Observers");
-//		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
-//		Button previous = new Button("Previous");
-//		print = new VBox(10);
-//		previous.setOnAction(e -> getMainWindow().setScene(mainScene));	
-//		new printObserversCommand(store,products,this).execute();
-//		print.getChildren().addAll(title, previous);
-//		printObservers = new Scene(print, 1000, 800);
-//		getMainWindow().setScene(printObservers);
-//		products.clear();
-//
-//
-//	}
-
 	public void sortDetails(Store store) {
 		function = "Sorting";
 		Button previous = new Button("Previous");
@@ -422,6 +406,7 @@ public class View {
 				art.setContentText(exception.getMessage());
 				art.show();
 			}
+			getMainWindow().setScene(mainScene);
 		}
 		else if (function == "Sorting") {
 			try {
@@ -434,6 +419,7 @@ public class View {
 				art.setContentText(c.getMessage());
 				art.show();
 			}
+			getMainWindow().setScene(mainScene);
 		}		
 		else if (function == "addProduct") {
 			if (serial2.getText().isEmpty() || productName.getText().isEmpty() || storeCost.getText().isEmpty() || sellingPrice.getText().isEmpty()
@@ -518,7 +504,7 @@ public class View {
 						msg.setContentText(" updated successfully!");
 						updateObserversAboutSale.setVisible(true);
 						msg.show();
-						numOfPrdoucts=0;
+						//numOfPrdoucts=0;
 						updateObserversAboutSale.setOnAction(e->new printObserversCommand(model,allProducts,this).execute());
 					}
 				}
@@ -591,20 +577,13 @@ public class View {
 
 		alert.showAndWait();
 	}
-	public void warningStage() {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("Information Dialog");
-		alert.setHeaderText("note");
-		alert.setContentText("There are no updates to change!\n");
-
-		alert.showAndWait();
-	}
+	
 
 
 	public void findProduct(Product product) {
 		if (product == null) {
 			Alert l = new Alert(Alert.AlertType.ERROR);
-			l.setContentText("Please fill all the details");
+			l.setContentText("there is no product with this serial");
 			l.show();
 			return;
 		}
@@ -619,7 +598,6 @@ public class View {
 
 	public void printLabels(String string)
 	{
-		// getMainWindow().setScene(printObservers);
 		Label label = new Label(string);
 		label.setVisible(true);
 		label.setLayoutX(20);
