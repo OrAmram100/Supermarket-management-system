@@ -53,6 +53,7 @@ public class Product {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+	
 	public static Product readProductFromFile(DataInput dIn) throws IOException
 	{
 		String name = binFile.readStringFromFile(MAX_NAME_SIZE, dIn);
@@ -61,6 +62,7 @@ public class Product {
 		Customer c = Customer.readCustomerToFile(dIn);
 		return new Product(name, buyingPrice, sellingPrice, c);
 	}
+	
 	public void writeProductToFile(DataOutput dOut) throws IOException
 	{
 		binFile.writeStringToFile(productName, MAX_NAME_SIZE, dOut);

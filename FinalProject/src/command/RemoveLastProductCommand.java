@@ -19,7 +19,6 @@ public class RemoveLastProductCommand implements Command<Integer> {
 		try {
 			return store.removeLastProduct();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

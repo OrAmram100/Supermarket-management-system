@@ -1,7 +1,5 @@
 package command;
 
-import java.io.FileNotFoundException;
-
 import model.Store;
 
 public class RemoveAllProducts implements Command<Object>{

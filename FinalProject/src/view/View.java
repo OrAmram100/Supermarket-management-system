@@ -82,7 +82,6 @@ public class View {
 	private int numOfPrdoucts=0;
 	private ComboBox<SortType> sortComboBox;
 	private List<Product> allProducts = new ArrayList<Product>();
-//	private VBox print;
 	private VBox addNewSale;
 	private ScrollPane sp;
 
@@ -150,7 +149,7 @@ public class View {
 		sellingPrice = new TextField();
 		sellingPrice.setVisible(true);
 		sellingPriceTxt = new Text("new price:");
-		 addNewSale = new VBox(10);
+		addNewSale = new VBox(10);
 		previous.setOnAction(e -> getMainWindow().setScene(mainScene));
 		addNewSale.getChildren().addAll(title, productKeyTxt, productKey,sellingPriceTxt, sellingPrice,  okButton,updateObserversAboutSale, previous);	
 		sp.setContent(addNewSale);
@@ -162,23 +161,6 @@ public class View {
 
 
 	}
-
-
-//	public void printObservers(Store store,List<Product> products) {
-//		function = "printObservers";
-//		Label title = new Label("print Observers");
-//		title.setFont(Font.font("Calibri", FontWeight.BOLD, 36));
-//		Button previous = new Button("Previous");
-//		print = new VBox(10);
-//		previous.setOnAction(e -> getMainWindow().setScene(mainScene));	
-//		new printObserversCommand(store,products,this).execute();
-//		print.getChildren().addAll(title, previous);
-//		printObservers = new Scene(print, 1000, 800);
-//		getMainWindow().setScene(printObservers);
-//		products.clear();
-//
-//
-//	}
 
 	public void sortDetails(Store store) {
 		function = "Sorting";
@@ -436,41 +418,70 @@ public class View {
 			}
 		}		
 		else if (function == "addProduct") {
-			if (serial2.getText().isEmpty() || productName.getText().isEmpty() || storeCost.getText().isEmpty() || sellingPrice.getText().isEmpty()
-					||customerName.getText().isEmpty()|| CustomerId.getText().isEmpty()||CustomerPhone.getText().isEmpty()) {
+			String key;
+			String name;
+			int Cost;
+			int price;
+			String nameCustomer;
+			String id;
+			String phone;
+
+			if (serial2.getText().isEmpty() || productName.getText().isEmpty() ||customerName.getText().isEmpty()|| CustomerId.getText().isEmpty()|| CustomerPhone.getText().isEmpty()) {
 				Alert art = new Alert(Alert.AlertType.ERROR);
 				art.setContentText("Please fill all the details");
 				art.show();
+
 			} else {
 				try {
-					String key =serial2.getText();
-					String name = productName.getText();
-					int Cost = Integer.parseInt(storeCost.getText());
-					int price = Integer.parseInt(sellingPrice.getText());
-					String nameCustomer = customerName.getText();
-					String id = CustomerId.getText();
-					String phone = CustomerPhone.getText();
+					key =serial2.getText();
+					name = productName.getText();
+					if (storeCost.getText().isEmpty()) {
+						Cost=0;
+					}
+					else {
+						Cost = Integer.parseInt(storeCost.getText());
+					}
+
+					if(sellingPrice.getText().isEmpty()) {
+						price=0;
+					}
+					else {
+						price = Integer.parseInt(sellingPrice.getText());
+					}
+
+					nameCustomer = customerName.getText();
+					id = CustomerId.getText();
+					phone = CustomerPhone.getText();
 					Customer customer;
 					if(r1.isSelected())
 					{
 						customer = new Customer(nameCustomer, id, phone, true);
 
 					}
-					else
+					else {
 						customer = new Customer(nameCustomer, id, phone, false);
+					}
 
-					Product p = new Product(name, Cost, price, customer);
-					new AddProductCommand(model, key, p).execute();						
-					Alert msg 
-					= new Alert(Alert.AlertType.CONFIRMATION);
-					msg.setContentText(" added successfully!");
-					msg.show();
+
+
+					if (price < 0 || Cost < 0) {
+						Alert art1 = new Alert(Alert.AlertType.ERROR);
+						art1.setContentText("price cant be less then 0");
+						art1.show();
+					}
+					else {
+						Product p = new Product(name, Cost, price, customer);
+						new AddProductCommand(model, key, p).execute();						
+						Alert msg 
+						= new Alert(Alert.AlertType.CONFIRMATION);
+						msg.setContentText(" added successfully!");
+						msg.show();
+					}
 				}
 				catch (Exception c) {
 					Alert art = new Alert(Alert.AlertType.ERROR);
 					art.setContentText(c.getMessage());
 					art.show();
-
 				}
 				getMainWindow().setScene(mainScene);
 
@@ -619,7 +630,6 @@ public class View {
 
 	public void printLabels(String string)
 	{
-		// getMainWindow().setScene(printObservers);
 		Label label = new Label(string);
 		label.setVisible(true);
 		label.setLayoutX(20);
@@ -631,8 +641,8 @@ public class View {
 		label.setAlignment(Pos.TOP_CENTER);
 		Platform.runLater(
 				() -> {
-					
-					 addNewSale.getChildren().add(label);
+
+					addNewSale.getChildren().add(label);
 				});
 	}
 }

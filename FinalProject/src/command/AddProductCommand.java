@@ -23,9 +23,4 @@ public class AddProductCommand implements Command<String>{
 
 	}
 
-//	@Override
-//	public void execute() {
-//		store.addProduct(key, product);
-//	}
-
 }

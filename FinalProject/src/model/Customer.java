@@ -24,6 +24,7 @@ public class Customer extends Thread implements Observer {
 		this.phoneNumber = phoneNumber;
 		this.wantUpdates = wantUpdates;
 	}
+	//GETTERS:
 
 	public String getCustomerName() {
 		return customerName;

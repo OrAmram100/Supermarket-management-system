@@ -23,7 +23,6 @@ public class ReadProductsToBinaryFileCommand implements Command<Integer> {
 		try {
 			return store.readProductsFromBinaryFile(fileName);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

@@ -13,8 +13,7 @@ public class Main extends Application{
 	Controller controller;
 	public static void main(String[] args) {
 		launch(args);
-		//Store store = new Store("Shefa isashar");
-		//Check check = new Check(s);
+	
 	}
 
 	@Override
