@@ -1,6 +1,6 @@
 package command;
 
-public interface Command <E>{
+public interface Command<E> {
 	E execute();
 
 }

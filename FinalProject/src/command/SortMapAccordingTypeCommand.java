@@ -11,12 +11,11 @@ public class SortMapAccordingTypeCommand implements Command<Object> {
 		this.store = store;
 		this.type = type;
 	}
-	
+
 	@Override
 	public Object execute() {
-	store.sortMapAccordingType(type);
-	return null;
+		store.sortMapAccordingType(type);
+		return null;
 	}
-	
-	
+
 }

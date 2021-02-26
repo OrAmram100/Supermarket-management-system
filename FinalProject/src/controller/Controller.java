@@ -1,6 +1,5 @@
 package controller;
 
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -17,13 +16,13 @@ public class Controller {
 		theModel = model;
 		theView = view;
 
-
 		try {
 			theModel.readProductsFromBinaryFile("products.txt");
-		} catch ( Exception c) {
+		} catch (Exception c) {
 			Label l = new Label("There are no products inside the file! ");
 			l.setTextFill(Color.RED);
-			theView.alertStage(l);		}
+			theView.alertStage(l);
+		}
 
 		EventHandler<ActionEvent> confirm = new EventHandler<ActionEvent>() {
 			@Override
@@ -51,7 +50,6 @@ public class Controller {
 		};
 		theView.addEventToShowdDetails(showDetails);
 
-
 		EventHandler<ActionEvent> sortButton = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -64,7 +62,6 @@ public class Controller {
 			}
 		};
 		theView.addEventToSortMap(sortButton);
-
 
 		EventHandler<ActionEvent> searchByKey = new EventHandler<ActionEvent>() {
 			@Override
@@ -79,12 +76,11 @@ public class Controller {
 		};
 		theView.addEventToSearchProduct(searchByKey);
 
-
 		EventHandler<ActionEvent> addProduct = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-			
-						try {
+
+				try {
 					theView.addProduct(model);
 				} catch (Exception c) {
 					Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -93,7 +89,6 @@ public class Controller {
 			}
 		};
 		theView.addEventToAddProduct(addProduct);
-
 
 		EventHandler<ActionEvent> removeProduct = new EventHandler<ActionEvent>() {
 			@Override
@@ -108,8 +103,7 @@ public class Controller {
 		};
 		theView.addEventToRemoveProduct(removeProduct);
 
-
-		EventHandler<ActionEvent> removeAllProducts= new EventHandler<ActionEvent>() {
+		EventHandler<ActionEvent> removeAllProducts = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				try {
@@ -122,8 +116,7 @@ public class Controller {
 		};
 		theView.addEventToRemoveAllProduct(removeAllProducts);
 
-
-		EventHandler<ActionEvent> undoLastProduct= new EventHandler<ActionEvent>() {
+		EventHandler<ActionEvent> undoLastProduct = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				try {
@@ -136,9 +129,7 @@ public class Controller {
 		};
 		theView.addEventToCancelProductAddition(undoLastProduct);
 
-
-
-		EventHandler<ActionEvent> sell= new EventHandler<ActionEvent>() {
+		EventHandler<ActionEvent> sell = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				try {
@@ -150,10 +141,7 @@ public class Controller {
 			}
 		};
 		theView.addEventToSell(sell);
-			
-		}
-	
 
 	}
 
-
+}

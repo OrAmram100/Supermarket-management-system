@@ -15,8 +15,7 @@ public class Customer extends Thread implements Observer {
 	private final static int MAX_CUST_NAME = 20;
 	private final static int MAX_ID = 9;
 	private final static int Phone_Num = 10;
-	public static final int CUSTOMER_SIZE = (MAX_CUST_NAME*2) + (MAX_ID*2)+(Phone_Num*2) + 1;
-
+	public static final int CUSTOMER_SIZE = (MAX_CUST_NAME * 2) + (MAX_ID * 2) + (Phone_Num * 2) + 1;
 
 	public Customer(String customerName, String customerId, String phoneNumber, boolean wantUpdates) {
 		this.customerName = customerName;
@@ -25,6 +24,7 @@ public class Customer extends Thread implements Observer {
 		this.wantUpdates = wantUpdates;
 	}
 
+	// GETTERS:
 	public String getCustomerName() {
 		return customerName;
 	}
@@ -37,7 +37,6 @@ public class Customer extends Thread implements Observer {
 		return phoneNumber;
 	}
 
-	
 	public boolean isWantUpdates() {
 		return wantUpdates;
 	}
@@ -55,29 +54,26 @@ public class Customer extends Thread implements Observer {
 		this.wantUpdates = wantUpdates;
 	}
 
-
-
 	@Override
 	public String toString() {
-		return "\nCustomer:\ncustomer Name: " + customerName + "\ncustomer ID: " + customerId + "\nphone Number: " + phoneNumber
-				+ "\nwant Updates: " + wantUpdates;
+		return "\nCustomer:\ncustomer Name: " + customerName + "\ncustomer ID: " + customerId + "\nphone Number: "
+				+ phoneNumber + "\nwant Updates: " + wantUpdates;
 	}
 
 	@Override
-	public String update(Observable obs, Product product) 
-	{
-		String str ="";
-		if(isWantUpdates())
-		{
-			str = (this.customerName + " ("+ this.getPhoneNumber()+ ") Hi!\nNew sale to the product:\n" +product.getProductName()+" cost :"+ product.getPriceToCostumer() + sendMSG());
+	public String update(Observable obs, Product product) {
+		String str = "";
+		if (isWantUpdates()) {
+			str = (this.customerName + " (" + this.getPhoneNumber() + ") Hi!\nNew sale to the product:\n"
+					+ product.getProductName() + " cost :" + product.getPriceToCostumer() + sendMSG());
 		}
 		return str;
 	}
 
 	public String sendMSG() {
 		StringBuffer sf = new StringBuffer();
-		sf.append( "\ncustomer sent message back\n");
-		sf.append("from: " +this.getCustomerName()+ "\n");
+		sf.append("\ncustomer sent message back\n");
+		sf.append("from: " + this.getCustomerName() + "\n");
 		return sf.toString();
 
 	}
@@ -85,16 +81,15 @@ public class Customer extends Thread implements Observer {
 	public static Customer readCustomerToFile(DataInput dataInput) throws IOException {
 		String name = binFile.readStringFromFile(MAX_CUST_NAME, dataInput);
 		String id = binFile.readStringFromFile(MAX_ID, dataInput);
-		String phone = binFile.readStringFromFile(Phone_Num, dataInput);	
-		Boolean isWantUpdate = dataInput.readBoolean(); 
-		return new Customer(name ,id, phone , isWantUpdate);
+		String phone = binFile.readStringFromFile(Phone_Num, dataInput);
+		Boolean isWantUpdate = dataInput.readBoolean();
+		return new Customer(name, id, phone, isWantUpdate);
 	}
-	public void writeCustomerToFile(DataOutput dOut) throws IOException
-	{
+
+	public void writeCustomerToFile(DataOutput dOut) throws IOException {
 		binFile.writeStringToFile(this.customerName, MAX_CUST_NAME, dOut);
 		binFile.writeStringToFile(this.customerId, MAX_ID, dOut);
-		binFile.writeStringToFile(this.phoneNumber, Phone_Num, dOut);		
+		binFile.writeStringToFile(this.phoneNumber, Phone_Num, dOut);
 		dOut.writeBoolean(this.wantUpdates);
 	}
 }
-

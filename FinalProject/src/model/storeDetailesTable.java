@@ -11,10 +11,8 @@ public class storeDetailesTable {
 	String wantUpdates;
 	int profit;
 
-
-	public storeDetailesTable(String serial, String productName,String PriceToStore,String sellPrice,String customerName,String id,
-			String customerPhone, String wantUpdates,int profit)
-	{
+	public storeDetailesTable(String serial, String productName, String PriceToStore, String sellPrice,
+			String customerName, String id, String customerPhone, String wantUpdates, int profit) {
 		this.serial = serial;
 		this.productName = productName;
 		this.priceToStore = PriceToStore;
@@ -23,13 +21,13 @@ public class storeDetailesTable {
 		this.id = id;
 		this.customerPhone = customerPhone;
 		this.wantUpdates = wantUpdates;
-		this.profit=profit;
+		this.profit = profit;
 	}
 
 	public int getProfit() {
 		return profit;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -62,6 +60,4 @@ public class storeDetailesTable {
 		return wantUpdates;
 	}
 
-
 }
-
