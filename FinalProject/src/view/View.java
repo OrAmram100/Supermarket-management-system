@@ -82,7 +82,6 @@ public class View {
 	private int numOfPrdoucts=0;
 	private ComboBox<SortType> sortComboBox;
 	private List<Product> allProducts = new ArrayList<Product>();
-	//	private VBox print;
 	private VBox addNewSale;
 	private ScrollPane sp;
 

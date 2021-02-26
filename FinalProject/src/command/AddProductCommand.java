@@ -3,14 +3,13 @@ package command;
 import model.Product;
 import model.Store;
 
-public class AddProductCommand implements Command<String>{
+public class AddProductCommand implements Command<String> {
 
 	private Store store;
 	private String key;
 	private Product product;
 
-	public AddProductCommand(Store store,String key , Product product)
-	{
+	public AddProductCommand(Store store, String key, Product product) {
 		this.store = store;
 		this.key = key;
 		this.product = product;
@@ -18,14 +17,9 @@ public class AddProductCommand implements Command<String>{
 
 	@Override
 	public String execute() {
-		 store.addProduct(key, product);
-		 return key;
+		store.addProduct(key, product);
+		return key;
 
 	}
-
-//	@Override
-//	public void execute() {
-//		store.addProduct(key, product);
-//	}
 
 }

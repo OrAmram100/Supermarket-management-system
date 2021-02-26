@@ -69,7 +69,7 @@ public class FileIterator {
 					rF.close();
 					return;
 				}
-				while (hasNext() && (size !=current)) {
+				while (hasNext() && (size != current)) {
 					int pos = last;
 					pos += productSize;
 					rF.seek(pos);
@@ -79,7 +79,7 @@ public class FileIterator {
 					binFile.writeStringToFile(key, Store.PRODUCT_KEY_MAX_SIZE, rF);
 					product.writeProductToFile(rF);
 					last = (int) rF.getFilePointer();
-					current+=productSize;
+					current += productSize;
 
 				}
 				rF.setLength(size - productSize);
@@ -121,4 +121,3 @@ public class FileIterator {
 		}
 	}
 }
-
