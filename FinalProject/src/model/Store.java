@@ -75,6 +75,7 @@ public class Store implements Observable {
 				addProduct(entry.getKey(), entry.getValue());
 			}
 			products = tempMap;
+			productsMomento = null;
 			break;
 
 		case eByDescending:
@@ -87,6 +88,7 @@ public class Store implements Observable {
 				addProduct(entry.getKey(), entry.getValue());
 			}
 			products = tempMap;
+			productsMomento = null;
 			break;
 
 		case ebyInsert:
@@ -99,6 +101,7 @@ public class Store implements Observable {
 				addProduct(entry.getKey(), entry.getValue());
 			}
 			products = new LinkedHashMap<String, Product>(tempMap);
+			productsMomento = null;
 			break;
 
 		default:
