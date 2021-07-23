@@ -24,7 +24,7 @@ public class Store implements Observable {
 	public static final int PRODUCT_KEY_MAX_SIZE = 9;
 
 	public enum SortType {
-		eByAscending, eByDescending, eByIncome
+		eByAscending, eByDescending, ebyInsert
 	};
 
 	public static final String FILE_NAME = "products.txt";
@@ -38,7 +38,7 @@ public class Store implements Observable {
 	SortType sortType;
 	private CompareProductByAscendingIdGenartor compareAscending;
 	private CompareProductByDescendingIdGenartor compareDescending;
-	private ComperatorProductByInsert compareByIncome;
+	private ComperatorProductByInsert comparebyInsert;
 
 	public static Store getInstance(String name) {
 		if (_instance == null)
@@ -55,7 +55,7 @@ public class Store implements Observable {
 		allCustomers = new TreeSet<Customer>();
 		CustomersToUpdate = new ArrayList<>();
 		this.name = name;
-		sortType = SortType.eByIncome;
+		sortType = SortType.ebyInsert;
 		setComperator(null);
 	}
 
@@ -75,7 +75,8 @@ public class Store implements Observable {
 				addProduct(entry.getKey(), entry.getValue());
 			}
 			products = tempMap;
-			productsMomento=null;
+
+			productsMomento = null;
 			break;
 
 		case eByDescending:
@@ -88,11 +89,12 @@ public class Store implements Observable {
 				addProduct(entry.getKey(), entry.getValue());
 			}
 			products = tempMap;
-			productsMomento=null;
+
+			productsMomento = null;
 			break;
 
-		case eByIncome:
-			this.setComperator(compareByIncome);
+		case ebyInsert:
+			this.setComperator(comparebyInsert);
 			tempMap = new TreeMap<String, Product>(comparator);
 			tempMap.putAll(products);
 			removeAllProducts(3);
@@ -100,8 +102,10 @@ public class Store implements Observable {
 				Entry<String, Product> entry = iterator.next();
 				addProduct(entry.getKey(), entry.getValue());
 			}
-			products = new TreeMap<String, Product>(tempMap);
-			productsMomento=null;
+
+
+			products = new LinkedHashMap<String, Product>(tempMap);
+			productsMomento = null;
 			break;
 
 		default:
