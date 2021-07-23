@@ -75,6 +75,7 @@ public class Store implements Observable {
 				addProduct(entry.getKey(), entry.getValue());
 			}
 			products = tempMap;
+
 			productsMomento = null;
 			break;
 
@@ -88,6 +89,7 @@ public class Store implements Observable {
 				addProduct(entry.getKey(), entry.getValue());
 			}
 			products = tempMap;
+
 			productsMomento = null;
 			break;
 
@@ -100,6 +102,8 @@ public class Store implements Observable {
 				Entry<String, Product> entry = iterator.next();
 				addProduct(entry.getKey(), entry.getValue());
 			}
+
+
 			products = new LinkedHashMap<String, Product>(tempMap);
 			productsMomento = null;
 			break;
@@ -260,7 +264,9 @@ public class Store implements Observable {
 	public class ComperatorProductByInsert implements Comparator<String> {
 
 		@Override
-		public int compare(String arg0, String arg1) {
+		public int compare(String serialNum1, String serialNum2) {
+			if(serialNum2.compareTo(serialNum1)==0)
+				return 0;
 			return 1;
 		}
 
