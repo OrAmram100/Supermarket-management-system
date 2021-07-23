@@ -22,7 +22,7 @@ public class Controller {
 			Label l = new Label("There are no products inside the file! ");
 			l.setTextFill(Color.RED);
 			theView.alertStage(l);
-		}
+		}//
 
 		EventHandler<ActionEvent> confirm = new EventHandler<ActionEvent>() {
 			@Override
